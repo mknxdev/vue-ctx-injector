@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/mekkanix/vue-ctx-injector/issues"
   },
-  "homepage": "https://github.com/mekkanix/vue-ctx-injector#readme"
+  "homepage": "https://github.com/mekkanix/vue-ctx-injector#readme",
+  "devDependencies": {
+    "babel-loader": "^8.2.2",
+    "path": "^0.12.7",
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  }
 }
