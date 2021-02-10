@@ -1,0 +1,25 @@
+{
+  "name": "vue-ctx-injector",
+  "version": "0.0.1",
+  "description": "A tool for injecting Vue.js components into pure HTML contexts, with the ability to communicate with the outside.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mekkanix/vue-ctx-injector.git"
+  },
+  "keywords": [
+    "vuejs",
+    "HTML",
+    "context",
+    "injector"
+  ],
+  "author": "Mekkanix (paulguzdariviere@gmail.com)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/mekkanix/vue-ctx-injector/issues"
+  },
+  "homepage": "https://github.com/mekkanix/vue-ctx-injector#readme"
+}
