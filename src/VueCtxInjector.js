@@ -1,6 +1,9 @@
+import Vue from 'vue'
+
 export default class VueCtxInjector {
   _stdlCompDefs = {}
-  _stdlCompElements = []
+  _stdlCompInstances = {}
+  _stdlCompElements = {}
 
   constructor (componentDefs, options) {
     this._stdlCompDefs = componentDefs
@@ -8,15 +11,15 @@ export default class VueCtxInjector {
   }
 
   _initStdlComponents () {
-    this._stdlCompElements = document.querySelectorAll('[data-v-comp]')
-    this._stdlCompElements.forEach(stdlCompElement => {
+    document.querySelectorAll('[data-v-comp]').forEach(stdlCompElement => {
       const componentName = stdlCompElement.getAttribute('data-v-comp')
       // check for well-formatted component name
       if (!componentName) {
         console.error('[VueCtxInjector] No component name specified.')
         return
       }
-      // mount component
+      // store & mount component
+      this._stdlCompElements[componentName] = stdlCompElement
       const props = this._getParsedElementProps(stdlCompElement)
       this._mountStdlComponent(componentName, props)
     })
@@ -31,7 +34,14 @@ export default class VueCtxInjector {
     // configuration/mounting
     const component = this._stdlCompDefs[name]
     const props = this._castProps(propsData, component)
-    console.log(component, props)
+    const Constructor = Vue.extend(component)
+    this._stdlCompInstances[name] = new Constructor({
+      propsData: props,
+    })
+    this._stdlCompInstances[name]._props = Vue.observable(props)
+    let compInstance = this._stdlCompInstances[name]
+    let vm = compInstance.$mount()
+    this._stdlCompElements[name].appendChild(vm.$el)
   }
 
   _getParsedElementProps (compElement) {
