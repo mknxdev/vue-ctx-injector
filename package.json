@@ -2,8 +2,10 @@
   "name": "vue-ctx-injector",
   "version": "0.0.1",
   "description": "A tool for injecting Vue.js components into pure HTML contexts, with the ability to communicate with the outside.",
-  "main": "index.js",
+  "main": "./dist/vue-ctx-injector.js",
   "scripts": {
+    "build": "webpack --config webpack.config.js --mode=production",
+    "watch": "webpack --config webpack.config.js --mode=production --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,6 +25,9 @@
   },
   "homepage": "https://github.com/mekkanix/vue-ctx-injector#readme",
   "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
     "babel-loader": "^8.2.2",
     "path": "^0.12.7",
     "webpack": "^5.21.2",
