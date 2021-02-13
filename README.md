@@ -28,9 +28,17 @@ context.
 
 ## Browser compatibility
 
+Here the minimum browser versions required for this package to work.
+
+**Desktop**
+
 | Chrome | Firefox | Safari | IE | Edge | Opera |
 |:------:|:-------:|:------:|:--:|:----:|:-----:|
-| -      | -       | -      | 11 | -    | -     |
+| 18     | 14      | 6.1    | 11 | 12   | 15    |
+
+**Smartphone/Tablet**
+
+Soon...
 
 ## Installation
 
