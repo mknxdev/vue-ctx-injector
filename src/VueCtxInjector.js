@@ -4,10 +4,10 @@ import Vue from 'vue'
  * Main VCI class, used to initialize, mount and updates "standalone components".
  */
 export default class VueCtxInjector {
-  _stdlCompDefs = {}
-  _stdlCompConstructors = {}
-  _stdlCompInstances = {}
-  _stdlCompElements = {}
+  _compDefs = {}
+  _compConstructors = {}
+  _compInstances = {}
+  _compElements = {}
 
   /**
    * Constructor starting components' initializations.
@@ -17,7 +17,7 @@ export default class VueCtxInjector {
    * @return {void}
    */
   constructor (componentDefs) {
-    this._stdlCompDefs = componentDefs
+    this._compDefs = componentDefs
     this._initStdlComponents()
   }
 
@@ -36,7 +36,7 @@ export default class VueCtxInjector {
         return
       }
       // store & mount component
-      this._stdlCompElements[componentName] = stdlCompElement
+      this._compElements[componentName] = stdlCompElement
       const props = this._getParsedElementProps(stdlCompElement)
       this._mountStdlComponent(componentName, props)
       this._watchStdlComponent(componentName)
@@ -53,20 +53,20 @@ export default class VueCtxInjector {
    */
   _mountStdlComponent (name, propsData) {
     // check for existing component definition
-    if (name && !this._stdlCompDefs.hasOwnProperty(name)) {
+    if (name && !this._compDefs.hasOwnProperty(name)) {
       console.error(`[VueCtxInjector] No component found with name: ${name}.`)
       return
     }
     // configuration/mounting
-    const component = this._stdlCompDefs[name]
+    const component = this._compDefs[name]
     const props = this._castProps(propsData, component)
-    this._stdlCompConstructors[name] = Vue.extend(component)
-    this._stdlCompInstances[name] = new this._stdlCompConstructors[name]({
+    this._compConstructors[name] = Vue.extend(component)
+    this._compInstances[name] = new this._compConstructors[name]({
       propsData: props,
     })
-    this._stdlCompInstances[name]._props = Vue.observable(props)
-    const vm = this._stdlCompInstances[name].$mount()
-    this._stdlCompElements[name].appendChild(vm.$el)
+    this._compInstances[name]._props = Vue.observable(props)
+    const vm = this._compInstances[name].$mount()
+    this._compElements[name].appendChild(vm.$el)
   }
 
   /**
@@ -80,20 +80,20 @@ export default class VueCtxInjector {
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
         if (mutation.type === 'attributes') {
-          const newProps = this._getParsedElementProps(this._stdlCompElements[name])
+          const newProps = this._getParsedElementProps(this._compElements[name])
           // TODO:  Look for another way to update props than re-instanciating
           // & mounting the whole component (needed because `propsData` is only
           // usable at instance creation).
-          this._stdlCompInstances[name] = new this._stdlCompConstructors[name]({
+          this._compInstances[name] = new this._compConstructors[name]({
             propsData: newProps,
           })
-          const vm = this._stdlCompInstances[name].$mount()
-          this._stdlCompElements[name].innerHTML = ''
-          this._stdlCompElements[name].appendChild(vm.$el)
+          const vm = this._compInstances[name].$mount()
+          this._compElements[name].innerHTML = ''
+          this._compElements[name].appendChild(vm.$el)
         }
       })
     });
-    observer.observe(this._stdlCompElements[name], { attributes: true, });
+    observer.observe(this._compElements[name], { attributes: true, });
   }
 
   /**
