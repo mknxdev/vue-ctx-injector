@@ -1,16 +1,32 @@
 import Vue from 'vue'
 
+/**
+ * Main VCI class, used to initialize, mount and updates "standalone components".
+ */
 export default class VueCtxInjector {
   _stdlCompDefs = {}
   _stdlCompConstructors = {}
   _stdlCompInstances = {}
   _stdlCompElements = {}
 
-  constructor (componentDefs, options) {
+  /**
+   * Constructor starting components' initializations.
+   *
+   * @param  {Object} componentDefs - An set of key-value pairs referencing all
+   *                                  component definitions.
+   * @return {void}
+   */
+  constructor (componentDefs) {
     this._stdlCompDefs = componentDefs
     this._initStdlComponents()
   }
 
+  /**
+   * Loops through all HTML-based "standalone component" then mounts and
+   * attaches them to the DOM. Also starts watching for props' values updates.
+   *
+   * @return {void}
+   */
   _initStdlComponents () {
     document.querySelectorAll('[data-v-comp]').forEach(stdlCompElement => {
       const componentName = stdlCompElement.getAttribute('data-v-comp')
@@ -27,6 +43,14 @@ export default class VueCtxInjector {
     })
   }
 
+  /**
+   * Starts the mounting process for the component defined by the given `name`,
+   * by injecting given `propsData` into it.
+   *
+   * @param  {String} name - Name of the component to mount..
+   * @param  {Object} propsData - Data used for component props.
+   * @return {void}
+   */
   _mountStdlComponent (name, propsData) {
     // check for existing component definition
     if (name && !this._stdlCompDefs.hasOwnProperty(name)) {
@@ -45,6 +69,13 @@ export default class VueCtxInjector {
     this._stdlCompElements[name].appendChild(vm.$el)
   }
 
+  /**
+   * Starts the props' watching process on the component defined by the given
+   * `name`.
+   *
+   * @param  {String} name - The component name.
+   * @return {void}
+   */
   _watchStdlComponent (name) {
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
@@ -65,6 +96,12 @@ export default class VueCtxInjector {
     observer.observe(this._stdlCompElements[name], { attributes: true, });
   }
 
+  /**
+   * Parse props on the given `compElement` (HTML-based "standalone component").
+   *
+   * @param  {HTMLElement} compElement - The HTML element to parse for props.
+   * @return {Object} - The parsed props.
+   */
   _getParsedElementProps (compElement) {
     let props = {}
     for (const i in compElement.attributes) {
@@ -83,6 +120,14 @@ export default class VueCtxInjector {
     return props
   }
 
+  /**
+   * Use the props-level defined types of given `component` definition to cast
+   * `initialProps` values.
+   *
+   * @param  {Object} initialProps - Initial string-based props.
+   * @param  {Object} component - The base component definition.
+   * @return {Object} - The well-caasted props.
+   */
   _castProps (initialProps, component) {
     let castedProps = {}
     for (const name in initialProps) {
