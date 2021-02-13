@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 export default class VueCtxInjector {
   _stdlCompDefs = {}
+  _stdlCompConstructors = {}
   _stdlCompInstances = {}
   _stdlCompElements = {}
 
@@ -22,6 +23,7 @@ export default class VueCtxInjector {
       this._stdlCompElements[componentName] = stdlCompElement
       const props = this._getParsedElementProps(stdlCompElement)
       this._mountStdlComponent(componentName, props)
+      this._watchStdlComponent(componentName)
     })
   }
 
@@ -34,14 +36,33 @@ export default class VueCtxInjector {
     // configuration/mounting
     const component = this._stdlCompDefs[name]
     const props = this._castProps(propsData, component)
-    const Constructor = Vue.extend(component)
-    this._stdlCompInstances[name] = new Constructor({
+    this._stdlCompConstructors[name] = Vue.extend(component)
+    this._stdlCompInstances[name] = new this._stdlCompConstructors[name]({
       propsData: props,
     })
     this._stdlCompInstances[name]._props = Vue.observable(props)
-    let compInstance = this._stdlCompInstances[name]
-    let vm = compInstance.$mount()
+    const vm = this._stdlCompInstances[name].$mount()
     this._stdlCompElements[name].appendChild(vm.$el)
+  }
+
+  _watchStdlComponent (name) {
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        if (mutation.type === 'attributes') {
+          const newProps = this._getParsedElementProps(this._stdlCompElements[name])
+          // TODO:  Look for another way to update props than re-instanciating
+          // & mounting the whole component (needed because `propsData` is only
+          // usable at instance creation).
+          this._stdlCompInstances[name] = new this._stdlCompConstructors[name]({
+            propsData: newProps,
+          })
+          const vm = this._stdlCompInstances[name].$mount()
+          this._stdlCompElements[name].innerHTML = ''
+          this._stdlCompElements[name].appendChild(vm.$el)
+        }
+      })
+    });
+    observer.observe(this._stdlCompElements[name], { attributes: true, });
   }
 
   _getParsedElementProps (compElement) {
