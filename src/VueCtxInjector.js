@@ -1,5 +1,7 @@
-/**
- * Main VCI class, used to initialize, mount and updates "standalone components".
+/*!
+ * VueCtxInjector v1.0.0
+ * (c) 2021 Paul Guzda-Rivière
+ * Released under the Apache-2.0 License.
  */
 export default class VueCtxInjector {
   _vueInstance = null

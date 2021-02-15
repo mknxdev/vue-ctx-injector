@@ -1,5 +1,5 @@
 /*!
- * Vue.js v2.6.8
- * (c) 2014-2019 Evan You
- * Released under the MIT License.
+ * VueCtxInjector v1.0.0
+ * (c) 2021 Paul Guzda-Rivière
+ * Released under the Apache-2.0 License.
  */
