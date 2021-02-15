@@ -70,11 +70,11 @@ Simply importing and instanciating it starts the DOM parsing process.
 ```js
 import Vue from 'vue'
 import VueCtxInjector from 'vue-ctx-injector'
-import HelloWorldComponent from '@/path/to/your/HelloWorldComponent.vue'
+import HelloWorld from '@/path/to/your/HelloWorld.vue'
 
 const vci = new VueCtxInjector(Vue, {
-  defs: {
-    HelloWorldComponent,
+  components: {
+    HelloWorld,
     // ...
   }
 })
@@ -97,10 +97,29 @@ DOM, the instantiation must be started only once the DOM is fully loaded.
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   const vci = new VueCtxInjector(Vue, {
-    defs: {
-      HelloWorldComponent,
+    components: {
+      HelloWorld,
       // ...
     }
   })
 })
+```
+
+## Configuration
+
+These are the available options you can pass to VCI during initialization.
+
+```js
+{
+  /**
+   * A set of key-value pairs referencing all Vue Components that need to be
+   * managed by VCI. Keys are component names, while values are component
+   * definitions objects.
+   *
+   * @type {Object<VComponent>}
+   */
+  components: {
+    // ...
+  }
+}
 ```

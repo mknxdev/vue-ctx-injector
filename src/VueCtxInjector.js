@@ -23,7 +23,7 @@ export default class VueCtxInjector {
       return
     }
     this._vueInstance = Vue
-    this._compDefs = opts.defs
+    this._compDefs = opts.components
     this._initStdlComponents()
   }
 
@@ -40,7 +40,7 @@ export default class VueCtxInjector {
   }
 
   _validateInitOptions (opts) {
-    if (!opts || !opts.defs) {
+    if (!opts || !opts.components) {
       console.error(`[VueCtxInjector] This is not a valid options object.`)
       return false
     }
