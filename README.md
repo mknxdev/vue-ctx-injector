@@ -65,7 +65,7 @@ standalone package (e.g. `<script />` tags).
 This is the preferred method to use this package, as it is the simpliest way to
 use it.
 
-Simply importing and instanciating it starts the DOM parsing process:
+Simply importing and instanciating it starts the DOM parsing process.
 
 ```js
 import Vue from 'vue'
@@ -73,8 +73,10 @@ import VueCtxInjector from 'vue-ctx-injector'
 import HelloWorldComponent from '@/path/to/your/HelloWorldComponent.vue'
 
 const vci = new VueCtxInjector(Vue, {
-  HelloWorldComponent,
-  // ...
+  defs: {
+    HelloWorldComponent,
+    // ...
+  }
 })
 ```
 
@@ -90,13 +92,15 @@ This package can also be loaded using classic import method:
 ```
 
 This implementation is slightly different: as VCI works by parsing the entire
-DOM, the instantiation must be started only once the DOM is fully loaded:
+DOM, the instantiation must be started only once the DOM is fully loaded.
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   const vci = new VueCtxInjector(Vue, {
-    HelloWorldComponent,
-    // ...
+    defs: {
+      HelloWorldComponent,
+      // ...
+    }
   })
 })
 ```

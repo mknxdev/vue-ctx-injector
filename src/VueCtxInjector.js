@@ -18,19 +18,33 @@ export default class VueCtxInjector {
    *                                  component definitions.
    * @return {void}
    */
-  constructor (Vue, componentDefs) {
-    // check for existing component definition
-    if (!Vue) {
-      console.error(`[VueCtxInjector] You need to provide the Vue instance as 1st argument.`)
-      return
-    }
-    if (Vue && (!Vue.hasOwnProperty('extend') || !Vue.hasOwnProperty('observable'))) {
-      console.error(`[VueCtxInjector] This is not a valid Vue instance.`)
+  constructor (Vue, opts) {
+    if (!this._validateVueInstance(Vue) || !this._validateInitOptions(opts)) {
       return
     }
     this._vueInstance = Vue
-    this._compDefs = componentDefs
+    this._compDefs = opts.defs
     this._initStdlComponents()
+  }
+
+  _validateVueInstance (vue) {
+    if (!vue) {
+      console.error(`[VueCtxInjector] You need to provide the Vue instance as 1st argument.`)
+      return false
+    }
+    if (vue && (!vue.hasOwnProperty('extend') || !vue.hasOwnProperty('observable'))) {
+      console.error(`[VueCtxInjector] This is not a valid Vue instance.`)
+      return false
+    }
+    return true
+  }
+
+  _validateInitOptions (opts) {
+    if (!opts || !opts.defs) {
+      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      return false
+    }
+    return true
   }
 
   /**
