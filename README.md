@@ -74,8 +74,8 @@ import VueCtxInjector from 'vue-ctx-injector'
 
 You just need to create a new VCI object to start the parsing process.
 
-:warning: Don't forget to start this process only **after** your DOM is fully loaded,
-because VCI use HTML elements to instantiate Vue Components.
+:warning: Don't forget to do that **only after** your DOM is fully loaded,
+because VCI uses HTML elements to instantiate Vue Components.
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -90,8 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-*Note: The Vue package is not automatically included in VCI in order to limit the
-bundle size, so you need to inject it manually during instantiation.*
+**Note:**
+- The Vue package is not included in VCI, in order to limit the bundle
+size. You'll need to inject the Vue instance manually during initialization.
+- This script works only with
+[Local Registered Components](https://vuejs.org/v2/guide/components-registration.html).
 
 ## Configuration
 
@@ -114,9 +117,10 @@ These are the available options you can pass to VCI during initialization.
 
 *More configuration options will be added very soon.*
 
-## License
+## Licensing
 
-[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
+Released under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
+license.
 
 ## Contributions
 
