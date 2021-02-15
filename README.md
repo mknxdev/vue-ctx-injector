@@ -38,8 +38,22 @@ Here the minimum browser versions required for this package to work.
 
 **Smartphone/Tablet**
 
-Soon...
+| iOS Safari | Opera Mini | Opera Mobile | Android Browser | Chrome Android | Firefox Android | UC Browser | Samsung | QQ Browser | Baidu | KaiOS |
+|:----------:|:----------:|:------------:|:---------------:|:--------------:|:---------------:|:----------:|:-------:|:----------:|:-----:|:-----:|
+| 7          | No support | 59           | 4.4             | 88             | 83              | 12.12      | 4       | 10.4       | 7.12  | 2.5   |
 
 ## Installation
 
-Soon...
+Via `yarn` or `npm`:
+
+```
+npm i vue-ctx-injector
+```
+
+```
+yarn add vue-ctx-injector
+```
+
+## Usage
+
+Soon.
