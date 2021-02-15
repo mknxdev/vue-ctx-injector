@@ -27,6 +27,12 @@ export default class VueCtxInjector {
     this._initStdlComponents()
   }
 
+  /**
+   * Check for valid user-provided Vue instance.
+   *
+   * @param  {Object} vue - The provided Vue instance.
+   * @return {Boolean}
+   */
   _validateVueInstance (vue) {
     if (!vue) {
       console.error(`[VueCtxInjector] You need to provide the Vue instance as 1st argument.`)
@@ -39,6 +45,12 @@ export default class VueCtxInjector {
     return true
   }
 
+  /**
+   * Check for valid user-provided options format.
+   *
+   * @param  {Object} opts - The provided options.
+   * @return {Boolean}
+   */
   _validateInitOptions (opts) {
     if (!opts || !opts.components) {
       console.error(`[VueCtxInjector] This is not a valid options object.`)
@@ -157,7 +169,7 @@ export default class VueCtxInjector {
   _castProps (initialProps, component) {
     let castedProps = {}
     for (const name in initialProps) {
-      if (name in component.props) {
+      if (component.props.hasOwnProperty(name)) {
         const castType = component.props[name].type
         let castedProp = null
         if ([Object, Array].includes(castType)) {
