@@ -19,7 +19,7 @@ basic HTML templates, while keeping them updated by simply manipulating
 component-related HTML elements.
 
 It can be assimiled to a customized `main.js` script replacement, which
-will instanciate child components on-demand, without enforcing a global Vue.js
+will instantiate child components on-demand, without enforcing a global Vue.js
 context.
 
 ## Prerequisites
@@ -57,53 +57,41 @@ yarn add vue-ctx-injector
 ## Usage
 
 As VCI uses the [UMD](https://github.com/umdjs/umd) standard, it can be either
-included into your code builder *(only tested with webpack yet)* or used as a
-standalone package (e.g. `<script />` tags).
+included and bundled with your code *(only tested with webpack yet)* or used as
+a standalone package (e.g. `<script />` tags).
 
-### Module Builder (recommended)
-
-This is the preferred method to use this package, as it is the simpliest way to
-use it.
-
-Simply importing and instanciating it starts the DOM parsing process.
+#### Module Builder
 
 ```js
-import Vue from 'vue'
 import VueCtxInjector from 'vue-ctx-injector'
-import HelloWorld from '@/path/to/your/HelloWorld.vue'
-
-const vci = new VueCtxInjector(Vue, {
-  components: {
-    HelloWorld,
-    // ...
-  }
-})
 ```
 
-*Note: The Vue package is not automatically included in order to limit the
-bundled script size, so you'll need to inject it manually during instantiation.*
-
-### Standalone package
-
-This package can also be loaded using classic import method:
+#### Standalone package
 
 ```html
 <script type="text/javascript" src="/path/to/vue-ctx-injector/vue-ctx-injector.js"></script>
 ```
 
-This implementation is slightly different: as VCI works by parsing the entire
-DOM, the instantiation must be started only once the DOM is fully loaded.
+You just need to create a new VCI object to start the parsing process.
+
+:warning: Don't forget to start this process only **after** your DOM is fully loaded,
+because VCI use HTML elements to instantiate Vue Components.
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
+
   const vci = new VueCtxInjector(Vue, {
     components: {
       HelloWorld,
       // ...
     }
   })
+
 })
 ```
+
+*Note: The Vue package is not automatically included in VCI in order to limit the
+bundle size, so you need to inject it manually during instantiation.*
 
 ## Configuration
 
@@ -116,7 +104,7 @@ These are the available options you can pass to VCI during initialization.
    * managed by VCI. Keys are component names, while values are component
    * definitions objects.
    *
-   * @type {Object<VComponent>}
+   * @type {Object}
    */
   components: {
     // ...

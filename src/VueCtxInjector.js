@@ -1,5 +1,3 @@
-// import Vue from 'vue'
-
 /**
  * Main VCI class, used to initialize, mount and updates "standalone components".
  */
@@ -152,7 +150,7 @@ export default class VueCtxInjector {
    *
    * @param  {Object} initialProps - Initial string-based props.
    * @param  {Object} component - The base component definition.
-   * @return {Object} - The well-caasted props.
+   * @return {Object} - The well-casted props.
    */
   _castProps (initialProps, component) {
     let castedProps = {}
