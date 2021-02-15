@@ -1,9 +1,10 @@
-import Vue from 'vue'
+// import Vue from 'vue'
 
 /**
  * Main VCI class, used to initialize, mount and updates "standalone components".
  */
 export default class VueCtxInjector {
+  _vueInstance = null
   _compDefs = {}
   _compConstructors = {}
   _compInstances = {}
@@ -12,11 +13,22 @@ export default class VueCtxInjector {
   /**
    * Constructor starting components' initializations.
    *
+   * @param  {Object} Vue - The injected Vue instance.
    * @param  {Object} componentDefs - An set of key-value pairs referencing all
    *                                  component definitions.
    * @return {void}
    */
-  constructor (componentDefs) {
+  constructor (Vue, componentDefs) {
+    // check for existing component definition
+    if (!Vue) {
+      console.error(`[VueCtxInjector] You need to provide the Vue instance as 1st argument.`)
+      return
+    }
+    if (Vue && (!Vue.hasOwnProperty('extend') || !Vue.hasOwnProperty('observable'))) {
+      console.error(`[VueCtxInjector] This is not a valid Vue instance.`)
+      return
+    }
+    this._vueInstance = Vue
     this._compDefs = componentDefs
     this._initStdlComponents()
   }
@@ -60,11 +72,11 @@ export default class VueCtxInjector {
     // configuration/mounting
     const component = this._compDefs[name]
     const props = this._castProps(propsData, component)
-    this._compConstructors[name] = Vue.extend(component)
+    this._compConstructors[name] = this._vueInstance.extend(component)
     this._compInstances[name] = new this._compConstructors[name]({
       propsData: props,
     })
-    this._compInstances[name]._props = Vue.observable(props)
+    this._compInstances[name]._props = this._vueInstance.observable(props)
     const vm = this._compInstances[name].$mount()
     this._compElements[name].appendChild(vm.$el)
   }

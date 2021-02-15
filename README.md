@@ -24,7 +24,7 @@ context.
 
 ## Prerequisites
 
-- **Vue v2.6.7** or greater *(Vue 3 not currently supported)*
+- **Vue v2.6.8** or greater *(Vue 3 not currently supported)*
 
 ## Browser compatibility
 
