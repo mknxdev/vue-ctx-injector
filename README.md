@@ -1,4 +1,4 @@
-# [WIP] vue-ctx-injector
+# vue-ctx-injector
 
 ## Preamble
 
@@ -72,10 +72,12 @@ import VueCtxInjector from 'vue-ctx-injector'
 <script type="text/javascript" src="/path/to/vue-ctx-injector/vue-ctx-injector.js"></script>
 ```
 
+*[CDN distributions will be available soon.]*
+
 You just need to create a new VCI object to start the parsing process.
 
-:warning: Don't forget to do that **only after** your DOM is fully loaded,
-because VCI uses HTML elements to instantiate Vue Components.
+:warning: Don't forget to do that **only after** your DOM is loaded, because VCI
+uses HTML elements to instantiate Vue Components.
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {

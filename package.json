@@ -1,6 +1,6 @@
 {
   "name": "vue-ctx-injector",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A tool for injecting Vue.js components into pure HTML contexts, with the ability to communicate with the outside.",
   "main": "./dist/vue-ctx-injector.js",
   "scripts": {
