@@ -44,10 +44,10 @@ Here the minimum browser versions required for this package to work.
 
 ## Installation
 
-Via `yarn` or `npm`:
+Via `npm` or `yarn`:
 
 ```
-npm i vue-ctx-injector
+npm i vue-ctx-injector --save
 ```
 
 ```
