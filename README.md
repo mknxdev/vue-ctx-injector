@@ -56,6 +56,8 @@ yarn add vue-ctx-injector
 
 ## Usage
 
+### Initialization
+
 As VCI uses the [UMD](https://github.com/umdjs/umd) standard, it can be either
 included and bundled with your code *(only tested with webpack yet)* or used as
 a standalone package (e.g. `<script />` tags).
@@ -90,11 +92,33 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-**Note:**
+**Notes:**
 - The Vue package is not included in VCI, in order to limit the bundle
 size. You'll need to inject the Vue instance manually during initialization.
 - This script works only with
 [Local Registered Components](https://vuejs.org/v2/guide/components-registration.html).
+
+### HTML-based standalone components
+
+To tell VCI which HTML elements must be used for injecting Vue components,
+a special attributes-based syntax must be used. Those attributes are used
+to identify the Vue component and pass data to it.
+
+```html
+<div
+  data-v-comp="HelloWorld"
+  data-v:name="Jack"
+  data-v:age="28"
+></div>
+```
+
+You **must** use the prefix `data-v-comp` to reference the component name
+you provide in the configuration options, and the `data-v:` prefix followed
+by the kebab-case version of the prop name for any prop you pass to it.
+
+*Every component instanciated using VCI is watched for attributes updates,
+and these changes also update component data.  
+This way you can easily initiate components' updates from outside scripts.*
 
 ## Configuration
 
