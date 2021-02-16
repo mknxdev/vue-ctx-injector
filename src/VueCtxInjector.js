@@ -27,7 +27,6 @@ export default class VueCtxInjector {
     this._compDefs = opts.components
     // set user-defined options
     this._storeFormattedUserOptions(opts)
-    console.log(this)
     this._initStdlComponents()
   }
 
@@ -130,8 +129,14 @@ export default class VueCtxInjector {
     const vm = this._compInstances[name].$mount()
     if (this._replaceRoot) {
       this._compElements[name].innerHTML = vm.$el.innerHTML
+      // retrieve classes and id and inject them to the mounted element
       for (const i of vm.$el.classList) {
-        this._compElements[name].classList.add(vm.$el.classList.item(i))
+        if (!this._compElements[name].classList.contains(vm.$el.classList.item(i))) {
+          this._compElements[name].classList.add(vm.$el.classList.item(i))
+        }
+      }
+      if (vm.$el.getAttribute('id')) {
+        this._compElements[name].setAttribute('id', vm.$el.getAttribute('id'))
       }
     } else {
       this._compElements[name].appendChild(vm.$el)
@@ -159,13 +164,6 @@ export default class VueCtxInjector {
           const vm = this._compInstances[name].$mount()
           if (this._replaceRoot) {
             this._compElements[name].innerHTML = vm.$el.innerHTML
-            for (const i of vm.$el.classList) {
-              const rootClasses = this._compElements[name].classList
-              const compClass = vm.$el.classList.item(i)
-              if (!rootClasses.contains(compClass)) {
-                rootClasses.add(compClass)
-              }
-            }
           } else {
             this._compElements[name].innerHTML = ''
             this._compElements[name].appendChild(vm.$el)

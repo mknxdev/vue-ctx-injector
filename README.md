@@ -127,16 +127,25 @@ These are the available options you can pass to VCI during initialization.
 ```js
 {
   /**
-   * [required]
    * A set of key-value pairs referencing all Vue Components that need to be
    * managed by VCI. Keys are component names, while values are component
    * definitions objects.
    *
+   * @required
    * @type {Object}
    */
-  components: {
-    // ...
-  }
+  components: { /* ... */ },
+
+  /**
+   * Defines whether VCI needs to replace the HTML receiving element by the
+   * VComponent root or not.
+   * Note: `class` and `id` attributes are kept after replacement.
+   *
+   * @optional
+   * @default true
+   * @type {Boolean}
+   */
+  replaceRoot: true|false,
 }
 ```
 
