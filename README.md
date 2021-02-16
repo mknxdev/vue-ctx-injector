@@ -116,7 +116,7 @@ to identify the Vue component and pass data to it.
 
 This syntax must be used to let VCI knows which elements it needs to used and
 how. By default, `data-v-comp` must be used to reference the component name
-white `data-v:<propname>` is used to pass props data to the component
+while `data-v:<propname>` is used to pass props data to the component
 (`<propname>` is the **kebab-case** version of the component prop name).
 
 These prefixes can be customized (except for the `data-` part) at
@@ -188,9 +188,6 @@ values.*
   propPrefix: 'v:',
 }
 ```
-https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
-
-*More configuration options will be added very soon.*
 
 ## Licensing
 
