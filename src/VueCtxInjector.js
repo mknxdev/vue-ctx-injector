@@ -13,9 +13,8 @@ export default class VueCtxInjector {
   /**
    * Constructor starting components' initializations.
    *
-   * @param  {Object} Vue - The injected Vue instance.
-   * @param  {Object} componentDefs - An set of key-value pairs referencing all
-   *                                  component definitions.
+   * @param  {Object} Vue - The user-provided Vue instance.
+   * @param  {Object} opts - Configuration options (see README for details)..
    * @return {void}
    */
   constructor (Vue, opts) {
