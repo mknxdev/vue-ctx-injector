@@ -9,6 +9,8 @@ export default class VueCtxInjector {
   _compConstructors = {}
   _compInstances = {}
   _compElements = {}
+  // default options
+  _replaceRoot = true
 
   /**
    * Constructor starting components' initializations.
@@ -23,6 +25,9 @@ export default class VueCtxInjector {
     }
     this._vueInstance = Vue
     this._compDefs = opts.components
+    // set user-defined options
+    this._storeFormattedUserOptions(opts)
+    console.log(this)
     this._initStdlComponents()
   }
 
@@ -51,11 +56,31 @@ export default class VueCtxInjector {
    * @return {Boolean}
    */
   _validateInitOptions (opts) {
-    if (!opts || !opts.components) {
+    if (!opts) {
+      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      return false
+    }
+    // arg: components
+    if (!opts.components) {
+      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      return false
+    }
+    // arg: replaceRoot
+    if (opts.replaceRoot && typeof opts.replaceRoot !== 'boolean') {
       console.error(`[VueCtxInjector] This is not a valid options object.`)
       return false
     }
     return true
+  }
+
+  /**
+   * -
+   *
+   * @param  {[type]} userOpts [description]
+   * @return {[type]}          [description]
+   */
+  _storeFormattedUserOptions (opts) {
+    this._replaceRoot = opts.replaceRoot === undefined ? true : opts.replaceRoot
   }
 
   /**
@@ -103,7 +128,14 @@ export default class VueCtxInjector {
     })
     this._compInstances[name]._props = this._vueInstance.observable(props)
     const vm = this._compInstances[name].$mount()
-    this._compElements[name].appendChild(vm.$el)
+    if (this._replaceRoot) {
+      this._compElements[name].innerHTML = vm.$el.innerHTML
+      for (const i of vm.$el.classList) {
+        this._compElements[name].classList.add(vm.$el.classList.item(i))
+      }
+    } else {
+      this._compElements[name].appendChild(vm.$el)
+    }
   }
 
   /**
@@ -125,8 +157,19 @@ export default class VueCtxInjector {
             propsData: newProps,
           })
           const vm = this._compInstances[name].$mount()
-          this._compElements[name].innerHTML = ''
-          this._compElements[name].appendChild(vm.$el)
+          if (this._replaceRoot) {
+            this._compElements[name].innerHTML = vm.$el.innerHTML
+            for (const i of vm.$el.classList) {
+              const rootClasses = this._compElements[name].classList
+              const compClass = vm.$el.classList.item(i)
+              if (!rootClasses.contains(compClass)) {
+                rootClasses.add(compClass)
+              }
+            }
+          } else {
+            this._compElements[name].innerHTML = ''
+            this._compElements[name].appendChild(vm.$el)
+          }
         }
       })
     });

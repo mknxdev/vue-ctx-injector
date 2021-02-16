@@ -127,6 +127,7 @@ These are the available options you can pass to VCI during initialization.
 ```js
 {
   /**
+   * [required]
    * A set of key-value pairs referencing all Vue Components that need to be
    * managed by VCI. Keys are component names, while values are component
    * definitions objects.
