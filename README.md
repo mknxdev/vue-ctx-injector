@@ -69,10 +69,8 @@ import VueCtxInjector from 'vue-ctx-injector'
 #### Standalone package
 
 ```html
-<script type="text/javascript" src="/path/to/vue-ctx-injector/vue-ctx-injector.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.0.1/dist/vue-ctx-injector.js"></script>
 ```
-
-*[CDN distributions will be available soon.]*
 
 You just need to create a new VCI object to start the parsing process.
 
