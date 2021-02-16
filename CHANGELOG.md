@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - A `replaceRoot` configuration option
+- Prefixes management in configuration options (`componentPrefix` and `propPrefix`)
 
 ## [1.0.2] - 2021-02-16
 ### Added
