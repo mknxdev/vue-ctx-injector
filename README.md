@@ -77,7 +77,7 @@ import VueCtxInjector from 'vue-ctx-injector'
 You just need to create a new VCI object to start the parsing process.
 
 :warning: Don't forget to do that **only after** your DOM is loaded, because VCI
-uses HTML elements to instantiate Vue Components.
+uses HTML elements to instantiate Vue components.
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -100,8 +100,10 @@ size. You'll need to inject the Vue instance manually during initialization.
 
 ### HTML-based standalone components
 
-To tell VCI which HTML elements must be used for injecting Vue components,
-a special attributes-based syntax must be used. Those attributes are used
+#### Syntax
+
+To tell VCI which HTML elements must be targeted for injecting Vue components,
+a special attributes-based syntax must be used. These attributes are used
 to identify the Vue component and pass data to it.
 
 ```html
@@ -112,17 +114,27 @@ to identify the Vue component and pass data to it.
 ></div>
 ```
 
-You **must** use the prefix `data-v-comp` to reference the component name
-you provide in the configuration options, and the `data-v:` prefix followed
-by the kebab-case version of the prop name for any prop you pass to it.
+This syntax must be used to let VCI knows which elements it needs to used and
+how. By default, `data-v-comp` must be used to reference the component name
+white `data-v:<propname>` is used to pass props data to the component
+(`<propname>` is the **kebab-case** version of the component prop name).
 
-*Every component instanciated using VCI is watched for attributes updates,
-and these changes also update component data.  
-This way you can easily initiate components' updates from outside scripts.*
+These prefixes can be customized (except for the `data-` part) at
+initialization. See the [Configuration](#configuration) section for more details.
+
+#### Reactivity
+
+Every component instanciated using VCI is watched for attributes updates,
+and these changes also update component data.
+
+This way you can easily initiate components' updates from outside scripts.
 
 ## Configuration
 
 These are the available options you can pass to VCI during initialization.
+
+*Values indicated below for optional options are used as internal default
+values.*
 
 ```js
 {
@@ -138,16 +150,45 @@ These are the available options you can pass to VCI during initialization.
 
   /**
    * Defines whether VCI needs to replace the HTML receiving element by the
-   * VComponent root or not.
-   * Note: `class` and `id` attributes are kept after replacement.
+   * Vue component root or not.
+   *
+   * Notes:
+   * - Only the tag type of the receiving element is used for final rendering.
+   * - `class` and `id` attributes are kept from the Vue component root element.
    *
    * @optional
-   * @default true
    * @type {Boolean}
    */
-  replaceRoot: true|false,
+  replaceRoot: true,
+
+  /**
+   * Defines the prefix to use as custom attributes name to reference Vue
+   * components.
+   *
+   * Note: This prefix must be used in addition to the classic `data-`
+   * standard prefix.
+   * By default, the full prefix name for component reference is `data-v-comp`.
+   *
+   * @optional
+   * @type {String}
+   */
+  componentPrefix: 'v-comp',
+
+  /**
+   * Defines the prefix to use as custom attributes name for Vue component
+   * props' binding.
+   *
+   * Note: This prefix must be used in addition to the classic `data-`
+   * standard prefix.
+   * By default, the full prefix name for props is `data-v:<propname>`.
+   *
+   * @optional
+   * @type {String}
+   */
+  propPrefix: 'v:',
 }
 ```
+https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*
 
 *More configuration options will be added very soon.*
 

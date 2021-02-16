@@ -11,6 +11,8 @@ export default class VueCtxInjector {
   _compElements = {}
   // default options
   _replaceRoot = true
+  _componentPrefix = 'v-comp'
+  _propPrefix = 'v:'
 
   /**
    * Constructor starting components' initializations.
@@ -80,6 +82,8 @@ export default class VueCtxInjector {
    */
   _storeFormattedUserOptions (opts) {
     this._replaceRoot = opts.replaceRoot === undefined ? true : opts.replaceRoot
+    this._componentPrefix = opts.componentPrefix === undefined ? 'v-comp' : opts.componentPrefix
+    this._propPrefix = opts.propPrefix === undefined ? 'v:' : opts.propPrefix
   }
 
   /**
@@ -89,8 +93,9 @@ export default class VueCtxInjector {
    * @return {void}
    */
   _initStdlComponents () {
-    document.querySelectorAll('[data-v-comp]').forEach(stdlCompElement => {
-      const componentName = stdlCompElement.getAttribute('data-v-comp')
+    const compAttrName = `data-${this._componentPrefix}`
+    document.querySelectorAll(`[${compAttrName}]`).forEach(stdlCompElement => {
+      const componentName = stdlCompElement.getAttribute(compAttrName)
       // check for well-formatted component name
       if (!componentName) {
         console.error('[VueCtxInjector] No component name specified.')
@@ -184,10 +189,10 @@ export default class VueCtxInjector {
     let props = {}
     for (const i in compElement.attributes) {
       const attr = compElement.attributes[i]
-      if (attr.name && attr.name.includes('data-v:')) {
+      if (attr.name && attr.name.includes(`data-${this._propPrefix}`)) {
         // TODO:  Maybe find a tiny library other than lodash to do this job
         // (lodash's `camelCase` imported code is too big)
-        const kcPropName = attr.name.substr(attr.name.indexOf('v:') + 2)
+        const kcPropName = attr.name.substr(attr.name.indexOf(this._propPrefix) + this._propPrefix.length)
         const propName = kcPropName.substr().toLowerCase().replace(
           /(\-[a-z])/g,
           match => match.charAt(match.length - 1).toUpperCase()
