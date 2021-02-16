@@ -71,6 +71,16 @@ export default class VueCtxInjector {
       console.error(`[VueCtxInjector] This is not a valid options object.`)
       return false
     }
+    // arg: componentPrefix
+    if (opts.componentPrefix && typeof opts.componentPrefix !== 'string') {
+      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      return false
+    }
+    // arg: propPrefix
+    if (opts.propPrefix && typeof opts.propPrefix !== 'string') {
+      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      return false
+    }
     return true
   }
 
