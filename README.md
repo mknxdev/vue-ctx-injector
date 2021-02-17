@@ -28,7 +28,7 @@ context.
 
 ## Browser compatibility
 
-Here the minimum browser versions required for this package to work.
+Here are the minimum browser versions required for this package to work.
 
 **Desktop**
 

@@ -11,8 +11,8 @@ export default class VueCtxInjector {
   _compElements = {}
   // default options
   _replaceRoot = true
-  _componentPrefix = 'v-comp'
-  _propPrefix = 'v:'
+  _componentPrefix = 'data-v-comp'
+  _propPrefix = 'data-v:'
 
   /**
    * Constructor starting components' initializations.
@@ -92,8 +92,8 @@ export default class VueCtxInjector {
    */
   _storeFormattedUserOptions (opts) {
     this._replaceRoot = opts.replaceRoot === undefined ? true : opts.replaceRoot
-    this._componentPrefix = opts.componentPrefix === undefined ? 'v-comp' : opts.componentPrefix
-    this._propPrefix = opts.propPrefix === undefined ? 'v:' : opts.propPrefix
+    this._componentPrefix = opts.componentPrefix === undefined ? 'data-v-comp' : `data-${opts.componentPrefix}`
+    this._propPrefix = opts.propPrefix === undefined ? 'data-v:' : `data-${opts.propPrefix}`
   }
 
   /**
@@ -103,9 +103,8 @@ export default class VueCtxInjector {
    * @return {void}
    */
   _initStdlComponents () {
-    const compAttrName = `data-${this._componentPrefix}`
-    document.querySelectorAll(`[${compAttrName}]`).forEach(stdlCompElement => {
-      const componentName = stdlCompElement.getAttribute(compAttrName)
+    document.querySelectorAll(`[${this._componentPrefix}]`).forEach(stdlCompElement => {
+      const componentName = stdlCompElement.getAttribute(this._componentPrefix)
       // check for well-formatted component name
       if (!componentName) {
         console.error('[VueCtxInjector] No component name specified.')
@@ -143,19 +142,59 @@ export default class VueCtxInjector {
     this._compInstances[name]._props = this._vueInstance.observable(props)
     const vm = this._compInstances[name].$mount()
     if (this._replaceRoot) {
-      this._compElements[name].innerHTML = vm.$el.innerHTML
-      // retrieve classes and id and inject them to the mounted element
-      for (const i of vm.$el.classList) {
-        if (!this._compElements[name].classList.contains(vm.$el.classList.item(i))) {
-          this._compElements[name].classList.add(vm.$el.classList.item(i))
-        }
-      }
-      if (vm.$el.getAttribute('id')) {
-        this._compElements[name].setAttribute('id', vm.$el.getAttribute('id'))
-      }
+      this._mergeComponentWithRootElement(name, vm.$el)
     } else {
       this._compElements[name].appendChild(vm.$el)
     }
+  }
+
+  /**
+   * Uses the stored "root" element and merge it with the given
+   * `componentElement`, by applying intelligent attributes merging strategy.
+   *
+   * @param  {String} name - The component name used to apply the merge.
+   * @param  {HTMLElement} componentElement - The component rendered DOM element.
+   * @return {void}
+   */
+  _mergeComponentWithRootElement (name, componentElement) {
+    // Store receiving elements attrs before replacing
+    let compElementId = componentElement.getAttribute('id')
+    let compElementClasses = componentElement.classList
+    let rootAttrCompName = this._compElements[name].getAttribute(this._componentPrefix)
+    let rootElementId = this._compElements[name].getAttribute('id')
+    let rootElementClasses = this._compElements[name].classList
+    let rootProps = []
+    for (const attr of this._compElements[name].attributes) {
+      if (attr.name.includes(this._propPrefix)) {
+        rootProps[attr.name] = attr.value
+      }
+    }
+    // Replace the receiving element by a new one based on injected component
+    // -- attributes parsing & merging
+    if (compElementId) {
+      componentElement.setAttribute('id', compElementId)
+    } else if (rootElementId) {
+      componentElement.setAttribute('id', rootElementId)
+    }
+    if (compElementClasses.length) {
+      componentElement.classList = compElementClasses
+    }
+    for (const className of rootElementClasses) {
+      if (!componentElement.classList.contains(className)) {
+        componentElement.classList.add(className)
+      }
+    }
+    componentElement.setAttribute(this._componentPrefix, rootAttrCompName)
+    for (const key in rootProps) {
+      componentElement.setAttribute(key, rootProps[key])
+    }
+    // -- DOM injecting
+    const idComment = document.createComment(`[vci-comp] ${name}`)
+    this._compElements[name].before(idComment)
+    this._compElements[name].remove()
+    this._compElements[name] = componentElement
+    idComment.after(componentElement)
+    idComment.remove()
   }
 
   /**
@@ -199,7 +238,7 @@ export default class VueCtxInjector {
     let props = {}
     for (const i in compElement.attributes) {
       const attr = compElement.attributes[i]
-      if (attr.name && attr.name.includes(`data-${this._propPrefix}`)) {
+      if (attr.name && attr.name.includes(this._propPrefix)) {
         // TODO:  Maybe find a tiny library other than lodash to do this job
         // (lodash's `camelCase` imported code is too big)
         const kcPropName = attr.name.substr(attr.name.indexOf(this._propPrefix) + this._propPrefix.length)

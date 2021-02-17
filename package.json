@@ -1,7 +1,7 @@
 {
   "name": "vue-ctx-injector",
   "version": "1.1.0",
-  "description": "A tool for injecting Vue.js components into HTML contexts.",
+  "description": "A tool for injecting standalone Vue.js components into HTML contexts.",
   "main": "./dist/vue-ctx-injector.js",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode=production",
