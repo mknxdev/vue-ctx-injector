@@ -1,4 +1,4 @@
-# vue-ctx-injector
+# Vue Context Injector
 
 ## Preamble
 
