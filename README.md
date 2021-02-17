@@ -10,7 +10,7 @@ project, and a progressive transition was the only solution.*
 
 *After looking a long time for tools or libraries allowing to progressively
 integrate Vue.js components into non-Vue project and didn't found viable packages
-to do the trick, the choice has been made to create a dedicated package for that.*
+to do the trick, the choice has been made to create a dedicated tool for that.*
 
 ## Introduction
 
@@ -19,8 +19,8 @@ basic HTML templates, while keeping them updated by simply manipulating
 component-related HTML elements.
 
 It can be assimiled to a customized `main.js` script replacement, which
-will instantiate child components on-demand, without enforcing a global Vue.js
-context.
+allows you to instantiate child components on-demand, without enforcing a global
+Vue.js context on your webpages.
 
 ## Prerequisites
 
@@ -74,7 +74,10 @@ import VueCtxInjector from 'vue-ctx-injector'
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.0.1/dist/vue-ctx-injector.js"></script>
 ```
 
-You just need to create a new VCI object to start the parsing process.
+The only thing to do is to create a new VCI object to start the parsing process.
+
+*The 1st argument is your Vue instance and the 2nd one is a configuration
+object.*
 
 :warning: Don't forget to do that **only after** your DOM is loaded, because VCI
 uses HTML elements to instantiate Vue components.
@@ -92,10 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-**Notes:**
-- The Vue package is not included in VCI, in order to limit the bundle
-size. You'll need to inject the Vue instance manually during initialization.
-- This script works only with
+**Note:** This script works only with
 [Local Registered Components](https://vuejs.org/v2/guide/components-registration.html).
 
 ### HTML-based standalone components
@@ -114,7 +114,7 @@ to identify the Vue component and pass data to it.
 ></div>
 ```
 
-This syntax must be used to let VCI knows which elements it needs to used and
+This syntax must be used to let VCI knows which elements it needs to use and
 how. By default, `data-v-comp` must be used to reference the component name
 while `data-v:<propname>` is used to pass props data to the component
 (`<propname>` is the **kebab-case** version of the component prop name).
@@ -152,9 +152,10 @@ values.*
    * Defines whether VCI needs to replace the HTML receiving element by the
    * Vue component root or not.
    *
-   * Notes:
-   * - Only the tag type of the receiving element is used for final rendering.
-   * - `class` and `id` attributes are kept from the Vue component root element.
+   * Warning: Your root element type will be replaced by the component-based one.
+   *
+   * Note: Root element's `id` and `class` attributes values are preserved after
+   * rendering.
    *
    * @optional
    * @type {Boolean}
