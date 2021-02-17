@@ -1,6 +1,6 @@
 /*!
- * VueCtxInjector v1.0.0
- * (c) 2021 Paul Guzda-Rivière
+ * VueCtxInjector v1.1.1
+ * (c) 2021 Paul Guzda-Rivière (@mekkanix)
  * Released under the Apache-2.0 License.
  */
 export default class VueCtxInjector {
