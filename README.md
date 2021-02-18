@@ -14,13 +14,11 @@ to do the trick, the choice has been made to create a dedicated tool for that.*
 
 ## Introduction
 
-VCI is a tiny tool for injecting standalone components with Vue.js context into
-basic HTML templates, while keeping them updated by simply manipulating
-component-related HTML elements.
-
-It can be assimiled to a customized `main.js` script replacement, which
-allows you to instantiate child components on-demand, without enforcing a global
-Vue.js context on your webpages.
+VCI is a tool that allows you to inject standalone Vue.js components with their
+contexts into simple HTML templates.  
+It can be assimiled to a customized entrypoint which allows you to instantiate
+child components on-demand, without enforcing a global Vue.js context on your
+webpages.
 
 ## Prerequisites
 
@@ -59,8 +57,8 @@ yarn add vue-ctx-injector
 ### Initialization
 
 As VCI uses the [UMD](https://github.com/umdjs/umd) standard, it can be either
-included and bundled with your code *(only tested with webpack yet)* or used as
-a standalone package (e.g. `<script />` tags).
+used as a module *(only tested with webpack yet)* or as a standalone package
+(e.g. `<script />` tags).
 
 #### Module Builder
 
@@ -71,16 +69,12 @@ import VueCtxInjector from 'vue-ctx-injector'
 #### Standalone package
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.0.1/dist/vue-ctx-injector.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.1.2/dist/vue-ctx-injector.js"></script>
 ```
 
-The only thing to do is to create a new VCI object to start the parsing process.
-
-*The 1st argument is your Vue instance and the 2nd one is a configuration
-object.*
-
-:warning: Don't forget to do that **only after** your DOM is loaded, because VCI
-uses HTML elements to instantiate Vue components.
+You just need to instantiate a new VCI object to start the parsing process.  
+Pass your Vue instance as first argument and a configuration object as second
+argument:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -95,7 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-**Note:** This script works only with
+*As VCI uses HTML elements to get component informations and instantiate them,
+don't forget to launch the parsing only after these elements are mounted to
+the DOM.*
+
+**Important:** This tool only works with
 [Local Registered Components](https://vuejs.org/v2/guide/components-registration.html).
 
 ### HTML-based standalone components
@@ -120,11 +118,12 @@ while `data-v:<propname>` is used to pass props data to the component
 (`<propname>` is the **kebab-case** version of the component prop name).
 
 These prefixes can be customized (except for the `data-` part) at
-initialization. See the [Configuration](#configuration) section for more details.
+initialization. See the [Configuration](#configuration) section for more
+informations.
 
 #### Reactivity
 
-Every component instanciated using VCI is watched for attributes updates,
+Every component instantiated using VCI is watched for attributes updates,
 and these changes also update component data.
 
 This way you can easily initiate components' updates from outside scripts.
@@ -149,10 +148,12 @@ values.*
   components: { /* ... */ },
 
   /**
-   * Defines whether VCI needs to replace the HTML receiving element by the
-   * Vue component root or not.
-   *
-   * Warning: Your root element type will be replaced by the component-based one.
+   * Determines the mounting strategy for standalone components.
+   * - `true`: the original HTML element will be merged with the component root
+   * element (the component root element's type takes precedence and replaces
+   * the original type).
+   * - `false`: the component root element is simply injected as a child element
+   * of the original HTML element.
    *
    * Note: Root element's `id` and `class` attributes values are preserved after
    * rendering.
