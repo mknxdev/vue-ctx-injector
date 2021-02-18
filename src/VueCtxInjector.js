@@ -3,12 +3,17 @@
  * (c) 2021 Paul Guzda-Rivière (@mekkanix)
  * Released under the Apache-2.0 License.
  */
+
+import ErrorManager from './ErrorManager.js'
+
 export default class VueCtxInjector {
+  // core
   _vueInstance = null
   _compDefs = {}
   _compConstructors = {}
   _compInstances = {}
   _compElements = {}
+  _errorManager = new ErrorManager()
   // default options
   _replaceRoot = true
   _componentPrefix = 'data-v-comp'
@@ -22,14 +27,20 @@ export default class VueCtxInjector {
    * @return {void}
    */
   constructor (Vue, opts) {
-    if (!this._validateVueInstance(Vue) || !this._validateInitOptions(opts)) {
-      return
+    let validInit = true
+    this._errorManager.encapsulate(() => {
+      if (!this._validateVueInstance(Vue) || !this._validateInitOptions(opts)) {
+        validInit = false
+      }
+    })
+
+    if (validInit) {
+      this._vueInstance = Vue
+      this._compDefs = opts.components
+      // set user-defined options
+      this._storeFormattedUserOptions(opts)
+      this._initStdlComponents()
     }
-    this._vueInstance = Vue
-    this._compDefs = opts.components
-    // set user-defined options
-    this._storeFormattedUserOptions(opts)
-    this._initStdlComponents()
   }
 
   /**
@@ -40,11 +51,11 @@ export default class VueCtxInjector {
    */
   _validateVueInstance (vue) {
     if (!vue) {
-      console.error(`[VueCtxInjector] You need to provide the Vue instance as 1st argument.`)
+      this._errorManager.error('You need to provide the Vue instance as 1st argument.')
       return false
     }
     if (vue && (!vue.hasOwnProperty('extend') || !vue.hasOwnProperty('observable'))) {
-      console.error(`[VueCtxInjector] This is not a valid Vue instance.`)
+      this._errorManager.error('This is not a valid Vue instance.')
       return false
     }
     return true
@@ -58,27 +69,27 @@ export default class VueCtxInjector {
    */
   _validateInitOptions (opts) {
     if (!opts) {
-      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      this._errorManager.error('This is not a valid options object.')
       return false
     }
     // arg: components
     if (!opts.components) {
-      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      this._errorManager.error('This is not a valid options object.')
       return false
     }
     // arg: replaceRoot
     if (opts.replaceRoot && typeof opts.replaceRoot !== 'boolean') {
-      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      this._errorManager.error('This is not a valid options object.')
       return false
     }
     // arg: componentPrefix
     if (opts.componentPrefix && typeof opts.componentPrefix !== 'string') {
-      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      this._errorManager.error('This is not a valid options object.')
       return false
     }
     // arg: propPrefix
     if (opts.propPrefix && typeof opts.propPrefix !== 'string') {
-      console.error(`[VueCtxInjector] This is not a valid options object.`)
+      this._errorManager.error('This is not a valid options object.')
       return false
     }
     return true
