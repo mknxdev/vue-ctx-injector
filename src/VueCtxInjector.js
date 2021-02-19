@@ -1,10 +1,9 @@
-/*!
- * VueCtxInjector v1.1.2
- * (c) 2021 Paul Guzda-Rivière (@mekkanix)
- * Released under the Apache-2.0 License.
- */
-
 import ErrorManager from './ErrorManager.js'
+
+/**
+ * VueCtxInjector - Main VCI class.
+ * Serves as entrypoint for components management processes.
+ */
 
 export default class VueCtxInjector {
   // core

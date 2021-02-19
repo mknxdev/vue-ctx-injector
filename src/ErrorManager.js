@@ -1,3 +1,7 @@
+/**
+ * ErrorManager - Used to manage runtime-based errors in the app.
+ */
+
 export default class ErrorManager {
 
   /**
