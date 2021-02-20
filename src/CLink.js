@@ -8,11 +8,21 @@ export default class CLink {
   componentName = null
   propsData = {}
 
+  /**
+   * -
+   *
+   * @param {[type]} name [description]
+   */
   setComponentName (name = null) {
     this.componentName = name
     this.isValidName = !!name
   }
 
+  /**
+   * -
+   *
+   * @param {[type]} data [description]
+   */
   setPropsData (data) {
     for (let name in data) {
       this.propsData[name] = data[name]
