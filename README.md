@@ -193,8 +193,7 @@ values.*
 
 ## Licensing
 
-Released under the [MIT](https://opensource.org/licenses/MIT)
-license.
+Released under the [MIT](https://opensource.org/licenses/MIT) license.
 
 ## Contributions
 

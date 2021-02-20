@@ -1,4 +1,5 @@
 import ErrorManager from './ErrorManager.js'
+import CLink from './CLink.js'
 
 /**
  * VueCtxInjector - Main VCI class.
@@ -101,9 +102,12 @@ export default class VueCtxInjector {
    * @return {[type]}          [description]
    */
   _storeFormattedUserOptions (opts) {
-    this._replaceRoot = opts.replaceRoot === undefined ? true : opts.replaceRoot
-    this._componentPrefix = opts.componentPrefix === undefined ? 'data-v-comp' : `data-${opts.componentPrefix}`
-    this._propPrefix = opts.propPrefix === undefined ? 'data-v:' : `data-${opts.propPrefix}`
+    this._replaceRoot = opts.replaceRoot === undefined ?
+      this._replaceRoot : opts.replaceRoot
+    this._componentPrefix = opts.componentPrefix === undefined ?
+      this._componentPrefix : `data-${opts.componentPrefix}`
+    this._propPrefix = opts.propPrefix === undefined ?
+      this._propPrefix : `data-${opts.propPrefix}`
   }
 
   /**
@@ -115,16 +119,23 @@ export default class VueCtxInjector {
   _initStdlComponents () {
     document.querySelectorAll(`[${this._componentPrefix}]`).forEach(stdlCompElement => {
       const componentName = stdlCompElement.getAttribute(this._componentPrefix)
+      const cLink = new CLink()
+      cLink.setComponentName(componentName)
       // check for well-formatted component name
-      if (!componentName) {
-        console.error('[VueCtxInjector] No component name specified.')
-        return
-      }
+      let validCName = true
+      this._errorManager.encapsulate(() => {
+        if (!cLink.isValidName) {
+          validCName = false
+          this._errorManager.error('No component name specified.')
+        }
+      })
       // store & mount component
-      this._compElements[componentName] = stdlCompElement
-      const props = this._getParsedElementProps(stdlCompElement)
-      this._mountStdlComponent(componentName, props)
-      this._watchStdlComponent(componentName)
+      if (validCName) {
+        this._compElements[componentName] = stdlCompElement
+        cLink.setPropsData(this._getParsedElementProps(stdlCompElement))
+        this._mountStdlComponent(cLink)
+        this._watchStdlComponent(cLink)
+      }
     })
   }
 
@@ -136,25 +147,30 @@ export default class VueCtxInjector {
    * @param  {Object} propsData - Data used for component props.
    * @return {void}
    */
-  _mountStdlComponent (name, propsData) {
+  _mountStdlComponent (cLink) {
     // check for existing component definition
-    if (name && !this._compDefs.hasOwnProperty(name)) {
-      console.error(`[VueCtxInjector] No component found with name: ${name}.`)
-      return
-    }
-    // configuration/mounting
-    const component = this._compDefs[name]
-    const props = this._castProps(propsData, component)
-    this._compConstructors[name] = this._vueInstance.extend(component)
-    this._compInstances[name] = new this._compConstructors[name]({
-      propsData: props,
+    let validName = true
+    this._errorManager.encapsulate(() => {
+      if (cLink.componentName && !this._compDefs.hasOwnProperty(cLink.componentName)) {
+        validName = false
+        this._errorManager.error(`No component found with name: ${cLink.componentName}.`)
+      }
     })
-    this._compInstances[name]._props = this._vueInstance.observable(props)
-    const vm = this._compInstances[name].$mount()
-    if (this._replaceRoot) {
-      this._mergeComponentWithRootElement(name, vm.$el)
-    } else {
-      this._compElements[name].appendChild(vm.$el)
+    // configuration/mounting
+    if (validName) {
+      const component = this._compDefs[cLink.componentName]
+      const props = this._castProps(cLink.propsData, component)
+      this._compConstructors[cLink.componentName] = this._vueInstance.extend(component)
+      this._compInstances[cLink.componentName] = new this._compConstructors[cLink.componentName]({
+        propsData: props,
+      })
+      this._compInstances[cLink.componentName]._props = this._vueInstance.observable(props)
+      const vm = this._compInstances[cLink.componentName].$mount()
+      if (this._replaceRoot) {
+        this._mergeComponentWithRootElement(cLink.componentName, vm.$el)
+      } else {
+        this._compElements[cLink.componentName].appendChild(vm.$el)
+      }
     }
   }
 
@@ -214,28 +230,28 @@ export default class VueCtxInjector {
    * @param  {String} name - The component name.
    * @return {void}
    */
-  _watchStdlComponent (name) {
+  _watchStdlComponent (cLink) {
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
         if (mutation.type === 'attributes') {
-          const newProps = this._getParsedElementProps(this._compElements[name])
+          const newProps = this._getParsedElementProps(this._compElements[cLink.componentName])
           // TODO:  Look for another way to update props than re-instanciating
           // & mounting the whole component (needed because `propsData` is only
           // usable at instance creation).
-          this._compInstances[name] = new this._compConstructors[name]({
+          this._compInstances[cLink.componentName] = new this._compConstructors[cLink.componentName]({
             propsData: newProps,
           })
-          const vm = this._compInstances[name].$mount()
+          const vm = this._compInstances[cLink.componentName].$mount()
           if (this._replaceRoot) {
-            this._compElements[name].innerHTML = vm.$el.innerHTML
+            this._compElements[cLink.componentName].innerHTML = vm.$el.innerHTML
           } else {
-            this._compElements[name].innerHTML = ''
-            this._compElements[name].appendChild(vm.$el)
+            this._compElements[cLink.componentName].innerHTML = ''
+            this._compElements[cLink.componentName].appendChild(vm.$el)
           }
         }
       })
     });
-    observer.observe(this._compElements[name], { attributes: true, });
+    observer.observe(this._compElements[cLink.componentName], { attributes: true, });
   }
 
   /**
