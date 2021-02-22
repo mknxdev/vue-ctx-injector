@@ -32,6 +32,10 @@ export default class VCIComponent {
     this.propsData = this._castProps(data)
   }
 
+  mount () {
+    
+  }
+
   /**
    * Use the props-level defined types of given internal vComp definition to
    * cast `initialProps` values.

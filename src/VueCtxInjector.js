@@ -125,7 +125,11 @@ export default class VueCtxInjector {
    * @return {void}
    */
   _initStdlComponents () {
-    console.log(this._domHandler.getParsedVCIComponents())
+    const vciComps = this._domHandler.getParsedVCIComponents()
+    for (const vciComp of vciComps) {
+      vciComp.mount()
+    }
+
     document.querySelectorAll(`[${this._componentPrefix}]`).forEach(stdlCompElement => {
       const componentName = stdlCompElement.getAttribute(this._componentPrefix)
       const vciComp = new VCIComponent()
