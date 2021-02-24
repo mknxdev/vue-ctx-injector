@@ -84,7 +84,7 @@ import VueCtxInjector from 'vue-ctx-injector'
 #### Standalone package
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.1.2/dist/vue-ctx-injector.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.2.0/dist/vue-ctx-injector.js"></script>
 ```
 
 You just need to instantiate a new VCI object to start the parsing process.  
@@ -175,6 +175,8 @@ values.*
    *
    * @optional
    * @type {Boolean}
+   *
+   * @version [1.1.0]
    */
   replaceRoot: true,
 
@@ -188,6 +190,8 @@ values.*
    *
    * @optional
    * @type {String}
+   *
+   * @version [1.1.0]
    */
   componentPrefix: 'v-comp',
 
@@ -201,6 +205,8 @@ values.*
    *
    * @optional
    * @type {String}
+   *
+   * @version [1.1.0]
    */
   propPrefix: 'v:',
 }
@@ -215,9 +221,11 @@ These methods are available and usable directly on the VCI instance.
 ```
 
 **Description:** Starts a new DOM parsing. Useful to instantiate newly added
-"standalone components" HTML elements after VCI instance creation.
+HTML customized elements ("standalone components") after VCI instance creation.
 
 **Arguments**: No
+
+*Version: 1.2.0*
 
 ## Licensing
 

@@ -1,5 +1,5 @@
 /*!
- * VueCtxInjector v1.1.3
+ * VueCtxInjector v1.2.0
  * (c) 2021 Paul Guzda-Rivière (@mekkanix)
  * Released under the Apache-2.0 License.
  */
