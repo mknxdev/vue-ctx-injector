@@ -106,10 +106,11 @@ export default class VueCtxInjector {
   }
 
   /**
-   * -
+   * Takes the used-defined `opts` to format and store them into VCI internal
+   * options.
    *
-   * @param  {[type]} userOpts [description]
-   * @return {[type]}          [description]
+   * @param  {Object} opts - The use-defined options.
+   * @return {void}
    */
   _storeFormattedUserOptions (opts) {
     this._replaceRoot = opts.replaceRoot === undefined ?
@@ -129,17 +130,36 @@ export default class VueCtxInjector {
   _initStdlComponents () {
     const vciComps = this._domHandler.getParsedVCIComponents()
     for (const vciComp of vciComps) {
-      let validCName = true
+      let valid = true
       this._errorManager.encapsulate(() => {
         if (!vciComp.isValidName()) {
-          validCName = false
+          valid = false
           this._errorManager.error('No component name specified.')
         }
+        if (!vciComp.isValidComponent()) {
+          valid = false
+          this._errorManager.error(`No component found with name: ${vciComp.name}.`)
+        }
       })
-      if (validCName) {
+      if (valid) {
         vciComp.mount()
         vciComp.watch()
       }
     }
+  }
+
+  // API Methods ---------------------------------------------------------------
+
+  /**
+   * Starts a new DOM parsing for standalone components.
+   *
+   * TODO:  This method simply calls the init method, so the already instantiated
+   * components are processed again. Improve this part to avoid re-parsing
+   * non-needed components.
+   *
+   * @return {void}
+   */
+  parse () {
+    this._initStdlComponents()
   }
 }

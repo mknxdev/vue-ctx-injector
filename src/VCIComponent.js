@@ -47,12 +47,27 @@ export default class VCIComponent {
   }
 
   /**
-   * Determines the component name valid status (different of `null`).
+   * Determines the component name validity status.
    *
    * @return {Boolean}
    */
   isValidName () {
-    return !!this.name
+    if (!this.name) {
+      return false
+    }
+    return true
+  }
+
+  /**
+   * Determines the component definition validity status.
+   *
+   * @return {Boolean}
+   */
+  isValidComponent () {
+    if (!this.vComp) {
+      return false
+    }
+    return true
   }
 
   /**
