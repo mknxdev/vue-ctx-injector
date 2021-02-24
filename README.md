@@ -1,5 +1,20 @@
 # Vue Context Injector
 
+## Table of Contents
+
+- [Preamble](#preamble)
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Browser compatibility](#browser-compatibility)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Initialization](#initialization)
+  - [HTML-based standalone components](#html-based-standalone-components)
+- [Configuration](#configuration)
+- [API Reference](#api-reference)
+- [Licensing](#licensing)
+- [Contribute](#contribute)
+
 ## Preamble
 
 *During a complete refactoring of a company's big project, integrating Vue.js to
@@ -191,10 +206,23 @@ values.*
 }
 ```
 
+## API Reference
+
+These methods are available and usable directly on the VCI instance.
+
+```js
+.parse()
+```
+
+**Description:** Starts a new DOM parsing. Useful to instantiate newly added
+"standalone components" HTML elements after VCI instance creation.
+
+**Arguments**: No
+
 ## Licensing
 
 Released under the [MIT](https://opensource.org/licenses/MIT) license.
 
-## Contributions
+## Contribute
 
 Soon...
