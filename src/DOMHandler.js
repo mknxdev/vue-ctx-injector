@@ -1,31 +1,50 @@
 import VCIComponent from './VCIComponent.js'
+import DOM from './helpers/DOM.js'
 
 /**
- * DOMHandler - Use for all DOM manipulations.
+ * DOMHandler - Used for all DOM manipulations.
  */
 
 export default class DOMHandler {
+  _vue = null
   _compDefs = {}
+  _replaceRoot = true
   _prefixes = {
     component: null,
     prop: null,
   }
 
-  constructor (compDefs, compPrefix = null, propPrefix = null) {
+  constructor (vue, compDefs, replaceRoot, compPrefix = null, propPrefix = null) {
+    this._vue = vue
     this._compDefs = compDefs
+    this._replaceRoot = replaceRoot
     this._prefixes.component = compPrefix
     this._prefixes.prop = propPrefix
   }
 
+  /**
+   * Loops through all HTML elements defined as "standalone component" to return
+   * a list of `VCIComponent`s (object representation of an element/component
+   * link).
+   *
+   * @return {Array<VCIComponent>}
+   */
   getParsedVCIComponents () {
-    const prefix = this._prefixes.component
+    const compPrefix = this._prefixes.component
+    const propPrefix = this._prefixes.prop
     let vciComps = []
-    document.querySelectorAll(`[${prefix}]`).forEach(compElement => {
+    document.querySelectorAll(`[${compPrefix}]`).forEach(compElement => {
       // retrieve component raw informations
-      const compName = compElement.getAttribute(prefix)
-      const propsData = this._getParsedVCIElementProps(compElement)
+      const compName = compElement.getAttribute(compPrefix)
+      const propsData = DOM.getVCIElementProps(propPrefix, compElement)
       // store informations into a VCI component
-      const vciComp = new VCIComponent(this._compDefs[compName])
+      const vciComp = new VCIComponent(this._vue, {
+        compPrefix: compPrefix,
+        propPrefix: propPrefix,
+        vComp: this._compDefs[compName],
+        rootElement: compElement,
+        replaceRoot: this._replaceRoot
+      })
       vciComp.setName(compName)
       vciComp.setPropsData(propsData)
       vciComps.push(vciComp)

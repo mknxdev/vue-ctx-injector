@@ -1,5 +1,5 @@
 /**
- * ErrorManager - Used to manage runtime-based errors in the app.
+ * ErrorManager - Used to manage runtime-based errors in the script.
  */
 
 export default class ErrorManager {

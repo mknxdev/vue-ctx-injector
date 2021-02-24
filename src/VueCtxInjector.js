@@ -9,7 +9,7 @@ import DOMHandler from './DOMHandler.js'
 
 export default class VueCtxInjector {
   // core
-  _vueInstance = null
+  _vue = null
   _compDefs = {}
   _compConstructors = {}
   _compInstances = {}
@@ -37,14 +37,16 @@ export default class VueCtxInjector {
     })
 
     if (validInit) {
-      this._vueInstance = Vue
+      this._vue = Vue
       this._compDefs = opts.components
       // set user-defined options
       this._storeFormattedUserOptions(opts)
       this._domHandler = new DOMHandler(
-        opts.components,
+        this._vue,
+        this._compDefs,
+        this._replaceRoot,
         this._componentPrefix,
-        this._propPrefix
+        this._propPrefix,
       )
       // init components parsing
       this._initStdlComponents()
@@ -127,192 +129,17 @@ export default class VueCtxInjector {
   _initStdlComponents () {
     const vciComps = this._domHandler.getParsedVCIComponents()
     for (const vciComp of vciComps) {
-      vciComp.mount()
-    }
-
-    document.querySelectorAll(`[${this._componentPrefix}]`).forEach(stdlCompElement => {
-      const componentName = stdlCompElement.getAttribute(this._componentPrefix)
-      const vciComp = new VCIComponent()
-      vciComp.setName(componentName)
-      // check for well-formatted component name
       let validCName = true
       this._errorManager.encapsulate(() => {
-        if (!vciComp.isValidName) {
+        if (!vciComp.isValidName()) {
           validCName = false
           this._errorManager.error('No component name specified.')
         }
       })
-      // store & mount component
       if (validCName) {
-        this._compElements[componentName] = stdlCompElement
-        vciComp.setPropsData(this._getParsedElementProps(stdlCompElement))
-        this._mountStdlComponent(vciComp)
-        this._watchStdlComponent(vciComp)
-      }
-    })
-  }
-
-  /**
-   * Starts the mounting process for the component defined by the given `name`,
-   * by injecting given `propsData` into it.
-   *
-   * @param  {String} name - Name of the component to mount..
-   * @param  {Object} propsData - Data used for component props.
-   * @return {void}
-   */
-  _mountStdlComponent (vciComp) {
-    // check for existing component definition
-    let validName = true
-    this._errorManager.encapsulate(() => {
-      if (vciComp.name && !this._compDefs.hasOwnProperty(vciComp.name)) {
-        validName = false
-        this._errorManager.error(`No component found with name: ${vciComp.name}.`)
-      }
-    })
-    // configuration/mounting
-    if (validName) {
-      const component = this._compDefs[vciComp.name]
-      const props = this._castProps(vciComp.propsData, component)
-      this._compConstructors[vciComp.name] = this._vueInstance.extend(component)
-      this._compInstances[vciComp.name] = new this._compConstructors[vciComp.name]({
-        propsData: props,
-      })
-      this._compInstances[vciComp.name]._props = this._vueInstance.observable(props)
-      const vm = this._compInstances[vciComp.name].$mount()
-      if (this._replaceRoot) {
-        this._mergeComponentWithRootElement(vciComp.name, vm.$el)
-      } else {
-        this._compElements[vciComp.name].appendChild(vm.$el)
+        vciComp.mount()
+        vciComp.watch()
       }
     }
-  }
-
-  /**
-   * Uses the stored "root" element and merge it with the given
-   * `componentElement`, by applying intelligent attributes merging strategy.
-   *
-   * @param  {String} name - The component name used to apply the merge.
-   * @param  {HTMLElement} componentElement - The component rendered DOM element.
-   * @return {void}
-   */
-  _mergeComponentWithRootElement (name, componentElement) {
-    // Store receiving elements attrs before replacing
-    let compElementId = componentElement.getAttribute('id')
-    let compElementClasses = componentElement.classList
-    let rootAttrCompName = this._compElements[name].getAttribute(this._componentPrefix)
-    let rootElementId = this._compElements[name].getAttribute('id')
-    let rootElementClasses = this._compElements[name].classList
-    let rootProps = []
-    for (const attr of this._compElements[name].attributes) {
-      if (attr.name.includes(this._propPrefix)) {
-        rootProps[attr.name] = attr.value
-      }
-    }
-    // Replace the receiving element by a new one based on injected component
-    // -- attributes parsing & merging
-    if (compElementId) {
-      componentElement.setAttribute('id', compElementId)
-    } else if (rootElementId) {
-      componentElement.setAttribute('id', rootElementId)
-    }
-    if (compElementClasses.length) {
-      componentElement.classList = compElementClasses
-    }
-    for (const className of rootElementClasses) {
-      if (!componentElement.classList.contains(className)) {
-        componentElement.classList.add(className)
-      }
-    }
-    componentElement.setAttribute(this._componentPrefix, rootAttrCompName)
-    for (const key in rootProps) {
-      componentElement.setAttribute(key, rootProps[key])
-    }
-    // -- DOM injecting
-    const idComment = document.createComment(`[vci-comp] ${name}`)
-    this._compElements[name].before(idComment)
-    this._compElements[name].remove()
-    this._compElements[name] = componentElement
-    idComment.after(componentElement)
-    idComment.remove()
-  }
-
-  /**
-   * Starts the props' watching process on the component defined by the given
-   * `name`.
-   *
-   * @param  {String} name - The component name.
-   * @return {void}
-   */
-  _watchStdlComponent (vciComp) {
-    const observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        if (mutation.type === 'attributes') {
-          const newProps = this._getParsedElementProps(this._compElements[vciComp.name])
-          // TODO:  Look for another way to update props than re-instanciating
-          // & mounting the whole component (needed because `propsData` is only
-          // usable at instance creation).
-          this._compInstances[vciComp.name] = new this._compConstructors[vciComp.name]({
-            propsData: newProps,
-          })
-          const vm = this._compInstances[vciComp.name].$mount()
-          if (this._replaceRoot) {
-            this._compElements[vciComp.name].innerHTML = vm.$el.innerHTML
-          } else {
-            this._compElements[vciComp.name].innerHTML = ''
-            this._compElements[vciComp.name].appendChild(vm.$el)
-          }
-        }
-      })
-    });
-    observer.observe(this._compElements[vciComp.name], { attributes: true, });
-  }
-
-  /**
-   * Parse props on the given `compElement` (HTML-based "standalone component").
-   *
-   * @param  {HTMLElement} compElement - The HTML element to parse for props.
-   * @return {Object} - The parsed props.
-   */
-  _getParsedElementProps (compElement) {
-    let props = {}
-    for (const i in compElement.attributes) {
-      const attr = compElement.attributes[i]
-      if (attr.name && attr.name.includes(this._propPrefix)) {
-        // TODO:  Maybe find a tiny library other than lodash to do this job
-        // (lodash's `camelCase` imported code is too big)
-        const kcPropName = attr.name.substr(attr.name.indexOf(this._propPrefix) + this._propPrefix.length)
-        const propName = kcPropName.substr().toLowerCase().replace(
-          /(\-[a-z])/g,
-          match => match.charAt(match.length - 1).toUpperCase()
-        )
-        props[propName] = attr.value
-      }
-    }
-    return props
-  }
-
-  /**
-   * Use the props-level defined types of given `component` definition to cast
-   * `initialProps` values.
-   *
-   * @param  {Object} initialProps - Initial string-based props.
-   * @param  {Object} component - The base component definition.
-   * @return {Object} - The well-casted props.
-   */
-  _castProps (initialProps, component) {
-    let castedProps = {}
-    for (const name in initialProps) {
-      if (component.props.hasOwnProperty(name)) {
-        const castType = component.props[name].type
-        let castedProp = null
-        if ([Object, Array].includes(castType)) {
-          castedProp = JSON.parse(initialProps[name]);
-        } else {
-          castedProp = castType(initialProps[name]);
-        }
-        castedProps[name] = castedProp
-      }
-    }
-    return castedProps
   }
 }
