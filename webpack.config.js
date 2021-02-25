@@ -14,6 +14,11 @@ module.exports = {
     publicPath: path.resolve(__dirname, './dist/'),
     filename: 'vue-ctx-injector.js',
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   module: {
     rules: [
       {
