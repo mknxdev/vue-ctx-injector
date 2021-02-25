@@ -212,7 +212,7 @@ HTML customized elements ("standalone components") after VCI instance creation.
 
 **Arguments**: -
 
-*[Version: 1.2.0]*
+*Version: 1.2.0*
 
 ## Licensing
 
