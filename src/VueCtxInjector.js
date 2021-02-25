@@ -31,12 +31,6 @@ export default class VueCtxInjector {
    */
   constructor (Vue, opts) {
     let conf = new Configurator(Vue, opts)
-    // let validInit = true
-    // this._errorManager.encapsulate(() => {
-    //   if (!this._validateVueInstance(Vue) || !this._validateInitOptions(opts)) {
-    //     validInit = false
-    //   }
-    // })
 
     if (conf.isValid()) {
       this._vue = Vue
@@ -53,58 +47,6 @@ export default class VueCtxInjector {
       // init components parsing
       this._initStdlComponents()
     }
-  }
-
-  /**
-   * Check for valid user-provided Vue instance.
-   *
-   * @param  {Object} vue - The provided Vue instance.
-   * @return {Boolean}
-   */
-  _validateVueInstance (vue) {
-    if (!vue) {
-      this._errorManager.error('You need to provide the Vue instance as 1st argument.')
-      return false
-    }
-    if (vue && (!vue.hasOwnProperty('extend') || !vue.hasOwnProperty('observable'))) {
-      this._errorManager.error('This is not a valid Vue instance.')
-      return false
-    }
-    return true
-  }
-
-  /**
-   * Check for valid user-provided options format.
-   *
-   * @param  {Object} opts - The provided options.
-   * @return {Boolean}
-   */
-  _validateInitOptions (opts) {
-    if (!opts) {
-      this._errorManager.error('This is not a valid options object.')
-      return false
-    }
-    // arg: components
-    if (!opts.components) {
-      this._errorManager.error('This is not a valid options object.')
-      return false
-    }
-    // arg: replaceRoot
-    if (opts.replaceRoot && typeof opts.replaceRoot !== 'boolean') {
-      this._errorManager.error('This is not a valid options object.')
-      return false
-    }
-    // arg: componentPrefix
-    if (opts.componentPrefix && typeof opts.componentPrefix !== 'string') {
-      this._errorManager.error('This is not a valid options object.')
-      return false
-    }
-    // arg: propPrefix
-    if (opts.propPrefix && typeof opts.propPrefix !== 'string') {
-      this._errorManager.error('This is not a valid options object.')
-      return false
-    }
-    return true
   }
 
   /**

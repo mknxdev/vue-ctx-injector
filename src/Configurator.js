@@ -30,6 +30,11 @@ export default class Configurator {
     })
   }
 
+  /**
+   * Perform necessary checks for valid user-provided Vue instance.
+   *
+   * @return {void}
+   */
   _validateVueInstance () {
     if (!this._userData.vue) {
       this._errorManager.error('You need to provide the Vue instance as 1st argument.')
@@ -42,6 +47,11 @@ export default class Configurator {
     }
   }
 
+  /**
+   * Perform necessary checks for valid user-provided configuration options.
+   *
+   * @return {void}
+   */
   _validateUserOptions () {
     let valid = true
     for (const key in this._userDataConds) {
