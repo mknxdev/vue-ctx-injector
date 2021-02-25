@@ -8,20 +8,10 @@ import DOM from './helpers/DOM.js'
 
 export default class DOMHandler {
   _errorManager = new ErrorManager()
-  _vue = null
-  _compDefs = {}
-  _replaceRoot = true
-  _prefixes = {
-    component: null,
-    prop: null,
-  }
+  _conf = null
 
-  constructor (vue, compDefs, replaceRoot, compPrefix = null, propPrefix = null) {
-    this._vue = vue
-    this._compDefs = compDefs
-    this._replaceRoot = replaceRoot
-    this._prefixes.component = compPrefix
-    this._prefixes.prop = propPrefix
+  constructor (configurator) {
+    this._conf = configurator
   }
 
   /**
@@ -32,8 +22,9 @@ export default class DOMHandler {
    * @return {Array<VCIComponent>}
    */
   getParsedVCIComponents () {
-    const compPrefix = this._prefixes.component
-    const propPrefix = this._prefixes.prop
+    const conf = this._conf.getFmtData()
+    const compPrefix = conf.opts.componentPrefix
+    const propPrefix = conf.opts.propPrefix
     let vciComps = []
     document.querySelectorAll(`[${compPrefix}]`).forEach(compElement => {
       let validComp = true
@@ -44,7 +35,7 @@ export default class DOMHandler {
           validComp = false
           this._errorManager.throwError('No component name specified.')
         }
-        if (!this._compDefs[compName]) {
+        if (!conf.opts.components[compName]) {
           validComp = false
           this._errorManager.throwError(`No component found with name: ${compName}.`)
         }
@@ -53,12 +44,12 @@ export default class DOMHandler {
       // store informations into a VCI component if valid
       if (validComp) {
         const propsData = DOM.getVCIElementProps(propPrefix, compElement)
-        const vciComp = new VCIComponent(this._vue, {
+        const vciComp = new VCIComponent(conf.vue, {
           compPrefix: compPrefix,
           propPrefix: propPrefix,
-          vComp: this._compDefs[compName],
+          vComp: conf.opts.components[compName],
           rootElement: compElement,
-          replaceRoot: this._replaceRoot
+          replaceRoot: conf.opts.replaceRoot
         })
         vciComp.setName(compName)
         vciComp.setPropsData(propsData)
@@ -76,7 +67,8 @@ export default class DOMHandler {
    */
   _getParsedVCIElementProps (compElement) {
     let props = {}
-    const prefix = this._prefixes.prop
+    const conf = this._conf.getFmtData()
+    const prefix = conf.opts.propPrefix
     for (const i in compElement.attributes) {
       const attr = compElement.attributes[i]
       if (attr.name && attr.name.includes(prefix)) {

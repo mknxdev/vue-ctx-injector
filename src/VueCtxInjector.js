@@ -1,24 +1,14 @@
 import Configurator from './Configurator.js'
-import VCIComponent from './VCIComponent.js'
 import DOMHandler from './DOMHandler.js'
 
 /**
  * VueCtxInjector - Main VCI class.
  * Serves as entrypoint for components management processes.
+ * Also used for public API calls.
  */
 
 export default class VueCtxInjector {
-  // core
-  _vue = null
-  _compDefs = {}
-  _compConstructors = {}
-  _compInstances = {}
-  _compElements = {}
   _domHandler = null
-  // default options
-  _replaceRoot = true
-  _componentPrefix = 'data-v-comp'
-  _propPrefix = 'data-v:'
 
   /**
    * Constructor starting components' initializations.
@@ -28,39 +18,12 @@ export default class VueCtxInjector {
    * @return {void}
    */
   constructor (Vue, opts) {
-    let conf = new Configurator(Vue, opts)
+    const conf = new Configurator(Vue, opts)
 
     if (conf.isValid()) {
-      this._vue = Vue
-      this._compDefs = opts.components
-      // set user-defined options
-      this._storeFormattedUserOptions(opts)
-      this._domHandler = new DOMHandler(
-        this._vue,
-        this._compDefs,
-        this._replaceRoot,
-        this._componentPrefix,
-        this._propPrefix,
-      )
-      // init components parsing
+      this._domHandler = new DOMHandler(conf)
       this._initStdlComponents()
     }
-  }
-
-  /**
-   * Takes the used-defined `opts` to format and store them into VCI internal
-   * options.
-   *
-   * @param  {Object} opts - The use-defined options.
-   * @return {void}
-   */
-  _storeFormattedUserOptions (opts) {
-    this._replaceRoot = opts.replaceRoot === undefined ?
-      this._replaceRoot : opts.replaceRoot
-    this._componentPrefix = opts.componentPrefix === undefined ?
-      this._componentPrefix : `data-${opts.componentPrefix}`
-    this._propPrefix = opts.propPrefix === undefined ?
-      this._propPrefix : `data-${opts.propPrefix}`
   }
 
   /**
@@ -77,7 +40,7 @@ export default class VueCtxInjector {
     }
   }
 
-  // API Methods ---------------------------------------------------------------
+  // Public Methods ------------------------------------------------------------
 
   /**
    * Triggers the DOM parsing for standalone components.

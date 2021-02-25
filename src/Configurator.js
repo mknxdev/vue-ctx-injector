@@ -7,6 +7,11 @@ import ErrorManager from './ErrorManager.js'
 
 export default class Configurator {
   _errorManager = new ErrorManager()
+  _defaultData = {
+    replaceRoot: true,
+    componentPrefix: 'data-v-comp',
+    propPrefix: 'data-v:',
+  }
   _userDataConds = {
     components: { type: 'object', required: true, },
     replaceRoot: { type: 'boolean', required: false, },
@@ -18,17 +23,29 @@ export default class Configurator {
     opts: null,
     valid: true,
   }
+  _fmtData = {
+    vue: null,
+    opts: null,
+  }
 
   constructor (vue, userOpts) {
     this._userData.vue = vue
     this._userData.opts = userOpts
 
+    let validData = true
     this._errorManager.encapsulate(() => {
-      this._validateVueInstance()
+      if (!this._validateVueInstance()) {
+        validData = false
+      }
       if (!this._validateUserOptions()) {
+        validData = false
         this._errorManager.throwError('This is not a valid configuration object.')
       }
     })
+
+    if (validData) {
+      this._storeFmtData(vue, userOpts)
+    }
   }
 
   /**
@@ -37,15 +54,19 @@ export default class Configurator {
    * @return {void}
    */
   _validateVueInstance () {
+    let valid = true
     if (!this._userData.vue) {
       this._errorManager.throwError('You need to provide the Vue instance as 1st argument.')
       this._userData.valid = false
+      valid = false
     }
     if (this._userData.vue && (!this._userData.vue.hasOwnProperty('extend') ||
         !this._userData.vue.hasOwnProperty('observable'))) {
       this._errorManager.throwError('This is not a valid Vue instance.')
       this._userData.valid = false
+      valid = false
     }
+    return valid
   }
 
   /**
@@ -70,6 +91,31 @@ export default class Configurator {
       }
     }
     return valid
+  }
+
+  /**
+   * Takes the user-provided `vue` and `opts` arguments to format and store
+   * them into a formatted internal options object.
+   *
+   * @param  {Object} vue - The user-provided Vue instance.
+   * @param  {Object} opts - The user-defined options.
+   * @return {void}
+   */
+  _storeFmtData (vue, opts) {
+    this._fmtData.vue = vue
+    this._fmtData.opts = {
+      components: opts.components,
+      replaceRoot: opts.replaceRoot === undefined ?
+        this._defaultData.replaceRoot : opts.replaceRoot,
+      componentPrefix: opts.componentPrefix === undefined ?
+        this._defaultData.componentPrefix : `data-${opts.componentPrefix}`,
+      propPrefix: opts.propPrefix === undefined ?
+        this._defaultData.propPrefix : `data-${opts.propPrefix}`,
+    }
+  }
+
+  getFmtData () {
+    return this._fmtData
   }
 
   /**
