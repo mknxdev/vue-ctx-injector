@@ -71,7 +71,7 @@ import VueCtxInjector from 'vue-ctx-injector'
 #### Standalone package
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.2.0/dist/vue-ctx-injector.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.2.1/dist/vue-ctx-injector.js"></script>
 ```
 
 You just need to instantiate a new VCI object to start the parsing process.  
@@ -207,7 +207,7 @@ These methods are callable directly on the VCI instance.
 .parse()
 ```
 
-> Starts a new DOM parsing. Useful to instantiate newly added
+> Triggers a new DOM parsing. Useful to instantiate newly added
 > HTML customized elements ("standalone components") after VCI instance
 > creation.
 

@@ -1,6 +1,6 @@
 {
   "name": "vue-ctx-injector",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A tool for injecting standalone Vue.js components into HTML contexts.",
   "main": "./dist/vue-ctx-injector.js",
   "scripts": {
@@ -13,10 +13,17 @@
     "url": "git+https://github.com/mekkanix/vue-ctx-injector.git"
   },
   "keywords": [
+    "js",
+    "javascript",
+    "vue",
     "vuejs",
+    "vue.js",
     "HTML",
+    "ctx",
     "context",
-    "injector"
+    "inject",
+    "injector",
+    "template"
   ],
   "author": "Mekkanix (paulguzdariviere@gmail.com)",
   "license": "MIT",
