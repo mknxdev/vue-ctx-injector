@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js --mode=production",
     "watch": "webpack --config webpack.config.js --mode=production --watch",
-    "test": "jest -u"
+    "test": "jest -u --coverage"
   },
   "repository": {
     "type": "git",
