@@ -207,8 +207,9 @@ These methods are callable directly on the VCI instance.
 .parse()
 ```
 
-Starts a new DOM parsing. Useful to instantiate newly added
-HTML customized elements ("standalone components") after VCI instance creation.
+> Starts a new DOM parsing. Useful to instantiate newly added
+> HTML customized elements ("standalone components") after VCI instance
+> creation.
 
 **Arguments**: -
 
