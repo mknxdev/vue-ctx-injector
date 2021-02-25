@@ -1,4 +1,5 @@
 import VCIComponent from './VCIComponent.js'
+import ErrorManager from './ErrorManager.js'
 import DOM from './helpers/DOM.js'
 
 /**
@@ -6,6 +7,7 @@ import DOM from './helpers/DOM.js'
  */
 
 export default class DOMHandler {
+  _errorManager = new ErrorManager()
   _vue = null
   _compDefs = {}
   _replaceRoot = true
@@ -34,20 +36,34 @@ export default class DOMHandler {
     const propPrefix = this._prefixes.prop
     let vciComps = []
     document.querySelectorAll(`[${compPrefix}]`).forEach(compElement => {
-      // retrieve component raw informations
+      let validComp = true
+      // retrieve component raw informations then perform basic checkings
       const compName = compElement.getAttribute(compPrefix)
-      const propsData = DOM.getVCIElementProps(propPrefix, compElement)
-      // store informations into a VCI component
-      const vciComp = new VCIComponent(this._vue, {
-        compPrefix: compPrefix,
-        propPrefix: propPrefix,
-        vComp: this._compDefs[compName],
-        rootElement: compElement,
-        replaceRoot: this._replaceRoot
+      this._errorManager.encapsulate(() => {
+        if (!compName) {
+          validComp = false
+          this._errorManager.throwError('No component name specified.')
+        }
+        if (!this._compDefs[compName]) {
+          validComp = false
+          this._errorManager.throwError(`No component found with name: ${compName}.`)
+        }
       })
-      vciComp.setName(compName)
-      vciComp.setPropsData(propsData)
-      vciComps.push(vciComp)
+
+      // store informations into a VCI component if valid
+      if (validComp) {
+        const propsData = DOM.getVCIElementProps(propPrefix, compElement)
+        const vciComp = new VCIComponent(this._vue, {
+          compPrefix: compPrefix,
+          propPrefix: propPrefix,
+          vComp: this._compDefs[compName],
+          rootElement: compElement,
+          replaceRoot: this._replaceRoot
+        })
+        vciComp.setName(compName)
+        vciComp.setPropsData(propsData)
+        vciComps.push(vciComp)
+      }
     })
     return vciComps
   }

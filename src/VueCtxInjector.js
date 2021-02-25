@@ -1,5 +1,4 @@
 import Configurator from './Configurator.js'
-import ErrorManager from './ErrorManager.js'
 import VCIComponent from './VCIComponent.js'
 import DOMHandler from './DOMHandler.js'
 
@@ -15,7 +14,6 @@ export default class VueCtxInjector {
   _compConstructors = {}
   _compInstances = {}
   _compElements = {}
-  _errorManager = new ErrorManager()
   _domHandler = null
   // default options
   _replaceRoot = true
@@ -74,21 +72,8 @@ export default class VueCtxInjector {
   _initStdlComponents () {
     const vciComps = this._domHandler.getParsedVCIComponents()
     for (const vciComp of vciComps) {
-      let valid = true
-      this._errorManager.encapsulate(() => {
-        if (!vciComp.isValidName()) {
-          valid = false
-          this._errorManager.throwError('No component name specified.')
-        }
-        if (!vciComp.isValidComponent()) {
-          valid = false
-          this._errorManager.throwError(`No component found with name: ${vciComp.name}.`)
-        }
-      })
-      if (valid) {
-        vciComp.mount()
-        vciComp.watch()
-      }
+      vciComp.mount()
+      vciComp.watch()
     }
   }
 
