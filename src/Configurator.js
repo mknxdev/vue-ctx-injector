@@ -1,7 +1,8 @@
 import ErrorManager from './ErrorManager.js'
 
 /**
- * Configurator -
+ * Configurator - Performs checks & formatting on user-provided data
+ * (Vue instance and Configuration object).
  */
 
 export default class Configurator {
@@ -25,7 +26,7 @@ export default class Configurator {
     this._errorManager.encapsulate(() => {
       this._validateVueInstance()
       if (!this._validateUserOptions()) {
-        this._errorManager.error('This is not a valid configuration object.')
+        this._errorManager.throwError('This is not a valid configuration object.')
       }
     })
   }
@@ -37,12 +38,12 @@ export default class Configurator {
    */
   _validateVueInstance () {
     if (!this._userData.vue) {
-      this._errorManager.error('You need to provide the Vue instance as 1st argument.')
+      this._errorManager.throwError('You need to provide the Vue instance as 1st argument.')
       this._userData.valid = false
     }
     if (this._userData.vue && (!this._userData.vue.hasOwnProperty('extend') ||
         !this._userData.vue.hasOwnProperty('observable'))) {
-      this._errorManager.error('This is not a valid Vue instance.')
+      this._errorManager.throwError('This is not a valid Vue instance.')
       this._userData.valid = false
     }
   }
@@ -71,6 +72,11 @@ export default class Configurator {
     return valid
   }
 
+  /**
+   * Check for `valid` status of user-provided data.
+   *
+   * @return {Boolean}
+   */
   isValid () {
     return this._userData.valid
   }

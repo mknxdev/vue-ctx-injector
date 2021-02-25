@@ -29,7 +29,7 @@ export default class ErrorManager {
    * @param  {String} message - The error message to display in the console.
    * @return {void}
    */
-  error (message) {
+  throwError (message) {
     throw new Error(`[VueCtxInjector] ${message}`)
   }
 

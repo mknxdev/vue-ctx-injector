@@ -78,11 +78,11 @@ export default class VueCtxInjector {
       this._errorManager.encapsulate(() => {
         if (!vciComp.isValidName()) {
           valid = false
-          this._errorManager.error('No component name specified.')
+          this._errorManager.throwError('No component name specified.')
         }
         if (!vciComp.isValidComponent()) {
           valid = false
-          this._errorManager.error(`No component found with name: ${vciComp.name}.`)
+          this._errorManager.throwError(`No component found with name: ${vciComp.name}.`)
         }
       })
       if (valid) {
