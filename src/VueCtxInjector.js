@@ -1,3 +1,4 @@
+import Configurator from './Configurator.js'
 import ErrorManager from './ErrorManager.js'
 import VCIComponent from './VCIComponent.js'
 import DOMHandler from './DOMHandler.js'
@@ -29,14 +30,15 @@ export default class VueCtxInjector {
    * @return {void}
    */
   constructor (Vue, opts) {
-    let validInit = true
-    this._errorManager.encapsulate(() => {
-      if (!this._validateVueInstance(Vue) || !this._validateInitOptions(opts)) {
-        validInit = false
-      }
-    })
+    let conf = new Configurator(Vue, opts)
+    // let validInit = true
+    // this._errorManager.encapsulate(() => {
+    //   if (!this._validateVueInstance(Vue) || !this._validateInitOptions(opts)) {
+    //     validInit = false
+    //   }
+    // })
 
-    if (validInit) {
+    if (conf.isValid()) {
       this._vue = Vue
       this._compDefs = opts.components
       // set user-defined options
@@ -151,7 +153,7 @@ export default class VueCtxInjector {
   // API Methods ---------------------------------------------------------------
 
   /**
-   * Starts a new DOM parsing for standalone components.
+   * Triggers the DOM parsing for standalone components.
    *
    * TODO:  This method simply calls the init method, so the already instantiated
    * components are processed again. Improve this part to avoid re-parsing

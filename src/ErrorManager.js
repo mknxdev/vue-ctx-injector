@@ -33,4 +33,16 @@ export default class ErrorManager {
     throw new Error(`[VueCtxInjector] ${message}`)
   }
 
+  /**
+   * Throw a new `Error` instance in the console.
+   * This method must be used in conjunction with the `encapsulate` method and
+   * called inside the `try/catch` block to avoid 'UncaughtErrors'.
+   *
+   * @param  {String} message - The error message to display in the console.
+   * @return {void}
+   */
+  logError (message) {
+    console.error(`[VueCtxInjector] ${message}`)
+  }
+
 }
