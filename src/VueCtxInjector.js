@@ -9,6 +9,7 @@ import DOMHandler from './DOMHandler.js'
 
 export default class VueCtxInjector {
   _domHandler = null
+  _vciComps = []
 
   /**
    * Constructor starting components' initializations.
@@ -33,8 +34,8 @@ export default class VueCtxInjector {
    * @return {void}
    */
   _initStdlComponents () {
-    const vciComps = this._domHandler.getParsedVCIComponents()
-    for (const vciComp of vciComps) {
+    this._vciComps = this._domHandler.getParsedVCIComponents()
+    for (const vciComp of this._vciComps) {
       vciComp.mount()
       vciComp.watch()
     }
