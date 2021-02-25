@@ -2,7 +2,6 @@
 
 ## Table of Contents
 
-- [Preamble](#preamble)
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
 - [Browser compatibility](#browser-compatibility)
@@ -15,25 +14,13 @@
 - [Licensing](#licensing)
 - [Contribute](#contribute)
 
-## Preamble
-
-*During a complete refactoring of a company's big project, integrating Vue.js to
-replace a very old code architecture was almost a necessity to keep a
-well-working website.  
-The problem was the lack of time to allow to a one-shot refactoring on the
-project, and a progressive transition was the only solution.*
-
-*After looking a long time for tools or libraries allowing to progressively
-integrate Vue.js components into non-Vue project and didn't found viable packages
-to do the trick, the choice has been made to create a dedicated tool for that.*
-
 ## Introduction
 
 VCI is a tool that allows you to inject standalone Vue.js components with their
 contexts into simple HTML templates.  
 It can be assimiled to a customized entrypoint which allows you to instantiate
-child components on-demand, without enforcing a global Vue.js context on your
-webpages.
+components on-demand directly on simple templates, without enforcing a global
+Vue.js context on your webpage.
 
 ## Prerequisites
 
@@ -214,18 +201,18 @@ values.*
 
 ## API Reference
 
-These methods are available and usable directly on the VCI instance.
+These methods are callable directly on the VCI instance.
 
 ```js
 .parse()
 ```
 
-**Description:** Starts a new DOM parsing. Useful to instantiate newly added
+Starts a new DOM parsing. Useful to instantiate newly added
 HTML customized elements ("standalone components") after VCI instance creation.
 
-**Arguments**: No
+**Arguments**: -
 
-*Version: 1.2.0*
+*[Version: 1.2.0]*
 
 ## Licensing
 
