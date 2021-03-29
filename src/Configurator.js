@@ -36,6 +36,7 @@ export default class Configurator {
     this._errorManager.encapsulate(() => {
       if (!this._validateVueInstance()) {
         validData = false
+        this._errorManager.throwError('This is not a valid Vue instance.')
       }
       if (!this._validateUserOptions()) {
         validData = false
@@ -43,6 +44,7 @@ export default class Configurator {
       }
     })
 
+    this._userData._valid = validData
     if (validData) {
       this._storeFmtData(vue, userOpts)
     }
@@ -56,13 +58,11 @@ export default class Configurator {
   _validateVueInstance () {
     let valid = true
     if (!this._userData.vue) {
-      this._errorManager.throwError('You need to provide the Vue instance as 1st argument.')
       this._userData.valid = false
       valid = false
     }
     if (this._userData.vue && (!this._userData.vue.hasOwnProperty('extend') ||
         !this._userData.vue.hasOwnProperty('observable'))) {
-      this._errorManager.throwError('This is not a valid Vue instance.')
       this._userData.valid = false
       valid = false
     }
