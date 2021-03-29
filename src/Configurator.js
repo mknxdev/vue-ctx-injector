@@ -1,8 +1,8 @@
 import ErrorManager from './ErrorManager.js'
 
 /**
- * Configurator - Performs checks & formatting on user-provided data
- * (Vue instance and Configuration object).
+ * Configurator - Store, performs checks & format user-provided data (Vue
+ * instance and Configuration object) for further use.
  */
 
 export default class Configurator {
@@ -21,7 +21,7 @@ export default class Configurator {
   _userData = {
     vue: null,
     opts: null,
-    valid: true,
+    _valid: true,
   }
   _fmtData = {
     vue: null,
@@ -82,12 +82,12 @@ export default class Configurator {
       if (cond.required && !this._userData.opts[key]) {
         this._errorManager.logError(`The [options.${key}] option is required.`)
         valid = false
-        this._userData.valid = false
+        this._userData._valid = false
       }
       if (this._userData.opts[key] && typeof this._userData.opts[key] !== cond.type) {
         this._errorManager.logError(`The [options.${key}] option must be of type: ${cond.type}.`)
         valid = false
-        this._userData.valid = false
+        this._userData._valid = false
       }
     }
     return valid
@@ -114,6 +114,12 @@ export default class Configurator {
     }
   }
 
+  /**
+   * Return the well-formatted data, merged with default data for non-provided
+   * options.
+   *
+   * @return {Object}
+   */
   getFmtData () {
     return this._fmtData
   }
@@ -124,7 +130,7 @@ export default class Configurator {
    * @return {Boolean}
    */
   isValid () {
-    return this._userData.valid
+    return this._userData._valid
   }
 
 }
