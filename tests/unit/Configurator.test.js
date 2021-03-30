@@ -168,6 +168,40 @@ describe('Configurator: full data', () => {
 
 // Data: invalid data
 
+
+describe('Configurator data - invalid format for `vue` instance', () => {
+  const userOptions = {
+    components: {},
+    replaceRoot: true,
+    componentPrefix: 'v-comp',
+    propPrefix: 'v-prop',
+  }
+
+  it('should be invalid with: `null`', () => {
+    const conf = new Configurator(null, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+    expect(console.error).toHaveBeenCalledTimes(1)
+  })
+  it('should be invalid with: empty object', () => {
+    const conf = new Configurator({}, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+    expect(console.error).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('Configurator data - empty object', () => {
+  const userOptions = {}
+
+  it('should be in invalid state', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+  })
+  it('should log an error in the console (x2)', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(console.error).toHaveBeenCalledTimes(2)
+  })
+})
+
 describe('Configurator data - invalid format for: `componentPrefix`', () => {
   const userOptions = {
     components: {},
@@ -176,6 +210,10 @@ describe('Configurator data - invalid format for: `componentPrefix`', () => {
     propPrefix: 'v-prop',
   }
 
+  it('should be in invalid state', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+  })
   it('should log an error in the console (x2)', () => {
     const conf = new Configurator(Vue, userOptions)
     expect(console.error).toHaveBeenCalledTimes(2)
@@ -190,6 +228,10 @@ describe('Configurator data - invalid format for: `propPrefix', () => {
     propPrefix: function () { console.log('Oops!') }
   }
 
+  it('should be in invalid state', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+  })
   it('should log an error in the console (x2)', () => {
     const conf = new Configurator(Vue, userOptions)
     expect(console.error).toHaveBeenCalledTimes(2)
@@ -204,6 +246,10 @@ describe('Configurator data - invalid format for: `componentPrefix`, `propPrefix
     propPrefix: function () { console.log('Oops!') }
   }
 
+  it('should be in invalid state', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+  })
   it('should log an error in the console (x3)', () => {
     const conf = new Configurator(Vue, userOptions)
     expect(console.error).toHaveBeenCalledTimes(3)
@@ -218,6 +264,10 @@ describe('Configurator data - invalid format for: `replaceRoot`, `componentPrefi
     propPrefix: function () { console.log('Oops!') }
   }
 
+  it('should be in invalid state', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+  })
   it('should log an error in the console (x4)', () => {
     const conf = new Configurator(Vue, userOptions)
     expect(console.error).toHaveBeenCalledTimes(4)
@@ -232,6 +282,10 @@ describe('Configurator data - invalid format for: all options', () => {
     propPrefix: function () { console.log('Oops!') }
   }
 
+  it('should be in invalid state', () => {
+    const conf = new Configurator(Vue, userOptions)
+    expect(conf.isValid()).toBeFalsy()
+  })
   it('should log an error in the console (x4)', () => {
     const conf = new Configurator(Vue, userOptions)
     expect(console.error).toHaveBeenCalledTimes(4)
