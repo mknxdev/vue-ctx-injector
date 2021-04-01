@@ -8,6 +8,7 @@ module.exports = {
     '\\.js$': ['babel-jest', {
       plugins: ['@babel/plugin-proposal-class-properties'],
     }],
+    '.*\\.(vue)$': 'vue-jest',
   },
 
   collectCoverageFrom: [

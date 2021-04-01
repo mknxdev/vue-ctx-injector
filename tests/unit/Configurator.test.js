@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Configurator from '@/Configurator.js'
-import HelloWorld from './_components/HelloWorld.js'
-import HelloCounter from './_components/HelloCounter.js'
+import HelloWorld from './_components/HelloWorld.vue'
+import HelloCounter from './_components/HelloCounter.vue'
 
 // functions mocking
 console.error = jest.fn()

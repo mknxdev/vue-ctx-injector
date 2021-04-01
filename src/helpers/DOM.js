@@ -1,10 +1,11 @@
 export default class DOM {
 
   /**
-   * Parse props defined by the given `prefix` on the given `element`
-   * (HTML-based "standalone component").
-   * Note: This method only returns "parsed" props as-is, but not casted to
-   * Component-defined types; so they are only of `string` type.
+   * Parse props defined by the given `propPrefix` on the given `element`
+   * (HTML-based "standalone component"), and returns their "camelCased"
+   * version into an object.
+   * Note: This method only returns parsed props as-is, but not casted to
+   * Component-defined types; so values are only of `string` type.
    *
    * @param  {String} propPrefix - The prop prefix to use for parsing.
    * @param  {HTMLElement} compElement - The HTML element to parse for props.

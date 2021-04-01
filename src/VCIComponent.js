@@ -106,7 +106,7 @@ export default class VCIComponent {
           // & mounting the whole component (needed because `propsData` is only
           // usable at instance creation).
           this._vCompInstance = new this._vCompConstructor({
-            propsData: newProps,
+            propsData: this._castProps(newProps),
           })
           const vm = this._vCompInstance.$mount()
           this.setPropsData(newProps)
