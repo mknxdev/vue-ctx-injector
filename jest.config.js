@@ -15,12 +15,12 @@ module.exports = {
     '<rootDir>/src/**/*.{js,jsx}'
   ],
   coverageDirectory: '<rootDir>/tests/unit/_coverage',
-  // coverageThreshold: {
-  //   global: {
-  //     statements: 62,
-  //     branches: 53,
-  //     functions: 67,
-  //     lines: 63
-  //   }
-  // },
+  coverageThreshold: {
+    global: {
+      statements: 96.74,
+      branches: 82.5,
+      functions: 100,
+      lines: 96.74,
+    }
+  },
 }
