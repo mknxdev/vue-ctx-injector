@@ -1,4 +1,10 @@
-# Vue Context Injector
+# <div align="center">Vue Context Injector</div>
+
+<div align="center">
+
+[![Build Status](https://travis-ci.com/mekkanix/vue-ctx-injector.svg?branch=master)](https://travis-ci.com/mekkanix/vue-ctx-injector)
+
+</div>
 
 ## Table of Contents
 
@@ -71,7 +77,7 @@ import VueCtxInjector from 'vue-ctx-injector'
 #### Standalone package
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.2.1/dist/vue-ctx-injector.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.3.0/dist/vue-ctx-injector.js"></script>
 ```
 
 You just need to instantiate a new VCI object to start the parsing process.  
