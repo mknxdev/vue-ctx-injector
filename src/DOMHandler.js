@@ -52,7 +52,13 @@ export default class DOMHandler {
           replaceRoot: conf.opts.replaceRoot
         })
         vciComp.setName(compName)
-        vciComp.setPropsData(propsData)
+        if (!vciComp.isValidName()) {
+          this._errorManager.logError(`The name "${compName}" is not valid.`)
+        } else if (!vciComp.isValidComponent()) {
+          this._errorManager.logError(`The component "${compName}" is not a valid Vue component definition.`)
+        } else {
+          vciComp.setPropsData(propsData)
+        }
         vciComps.push(vciComp)
       }
     })

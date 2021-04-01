@@ -10,6 +10,7 @@ import DOMHandler from './DOMHandler.js'
 export default class VueCtxInjector {
   _domHandler = null
   _vciComps = []
+  _isInitialized = false
 
   /**
    * Constructor starting components' initializations.
@@ -35,10 +36,16 @@ export default class VueCtxInjector {
    */
   _initStdlComponents () {
     this._vciComps = this._domHandler.getParsedVCIComponents()
+    let valid = true
     for (const vciComp of this._vciComps) {
-      vciComp.mount()
-      vciComp.watch()
+      if (vciComp.isValidName() && vciComp.isValidComponent()) {
+        vciComp.mount()
+        vciComp.watch()
+      } else {
+        valid = false
+      }
     }
+    this._isInitialized = valid
   }
 
   // Public Methods ------------------------------------------------------------

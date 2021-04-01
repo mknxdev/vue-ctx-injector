@@ -43,7 +43,9 @@ export default class VCIComponent {
    * @return {void}
    */
   setPropsData (data) {
-    this.propsData = this._castProps(data)
+    if (this.isValidComponent()) {
+      this.propsData = this._castProps(data)
+    }
   }
 
   /**
@@ -64,7 +66,7 @@ export default class VCIComponent {
    * @return {Boolean}
    */
   isValidComponent () {
-    if (!this.vComp) {
+    if (!this.vComp || typeof this.vComp !== 'object') {
       return false
     }
     return true
