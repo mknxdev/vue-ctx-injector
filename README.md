@@ -32,7 +32,7 @@ Vue.js context on your webpage.
 
 - **Vue v2.6.8** or greater *(Vue 3 not currently supported)*
 
-## Browser compatibility
+## Compatibility
 
 Here are the minimum browser versions required for this package to work.
 
@@ -47,6 +47,9 @@ Here are the minimum browser versions required for this package to work.
 | iOS Safari | Opera Mini | Opera Mobile | Android Browser | Chrome Android | Firefox Android | UC Browser | Samsung | QQ Browser | Baidu | KaiOS |
 |:----------:|:----------:|:------------:|:---------------:|:--------------:|:---------------:|:----------:|:-------:|:----------:|:-----:|:-----:|
 | 7          | No support | 59           | 4.4             | 88             | 83              | 12.12      | 4       | 10.4       | 7.12  | 2.5   |
+
+:warning: This tool currently doesn't work with nested child components.
+The feature will be added soon.
 
 ## Installation
 
@@ -77,7 +80,7 @@ import VueCtxInjector from 'vue-ctx-injector'
 #### Standalone package
 
 ```html
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.3.0/dist/vue-ctx-injector.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue-ctx-injector@1.3.1/dist/vue-ctx-injector.js"></script>
 ```
 
 You just need to instantiate a new VCI object to start the parsing process.  
